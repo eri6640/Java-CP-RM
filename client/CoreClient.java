@@ -1,5 +1,8 @@
 package client;
 
+import hospital.Appointment;
+import hospital.Patient;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +15,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,7 +51,7 @@ public class CoreClient {
 	public static int ActionID = 0;
 	private static JFrame frame;
 	public static RecipesArray RecipeStorage = new RecipesArray();
-	public static int SelectedRecipeID = 1;
+	public static int SelectedRecipeID = 0;
 
 	public static void main( String[] args ){
 		
@@ -429,7 +433,7 @@ public class CoreClient {
 			titlePanel = new JPanel();
 			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
 					
-			label = new JLabel( "Izveleta recepte:" );
+			label = new JLabel( "Receptes laboshana:" );
 			titlePanel.add( label );
 			panel2_panel.add( titlePanel );
 			//title end
@@ -494,12 +498,32 @@ public class CoreClient {
 		    gbContainer.weightx = 0.0;
 		    gbContainer.fill = GridBagConstraints.NONE;
 		    
-		    JButton submitButton = new JButton("Submit");
+		    JButton submitButton = new JButton("Save Recipe");
 		    submitButton.setMargin( new Insets(2,10,2,10) );
+
+		    panel2_panel.add( submitButton );
 		    
-		    
-		    //set values
-		    field_name.setText( "Value" );
+		    submitButton.addActionListener( new ActionListener(){
+		   		@Override
+		   		public void actionPerformed( ActionEvent event ) {
+		   			if( field_name.getText().isEmpty() || field_category.getText().isEmpty() || field_recipe.getText().isEmpty() ){
+		   				showThis( "Visiem laukiem jabut aizpilditiem" );
+		   			}
+		   			else if( ! isValidName( field_name.getText() ) ){
+		   				showThis( "Problemas ar kategorijas notiekshanu!" );
+		   			}
+		   			else if( isNumber( field_id.getText() ) && isNumber( field_age.getText() ) ){
+		   				String[] name = field_name.getText().split( " " );
+		   				int id = Integer.parseInt(field_id.getText());
+		   				short age = (short) Integer.parseInt(field_id.getText());
+		   				//Main.addNewPatient( new Patient( id, name[0], name[1], age, new ArrayList<Appointment>() ) );
+		   				//frameHospitalMenu();
+		   			}
+		   			else{
+			   			System.out.println( "Nav norâdîts parezs id un/vai age" );
+		   			}
+		   		}
+		   	});
 		    
 		}
 	}
