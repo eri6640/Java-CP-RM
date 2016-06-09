@@ -125,6 +125,7 @@ public class CoreClient {
 		tabbedPane.addTab( ConfLang.Pane_Recepes, null, panel_1, null );
 		
 		JPanel panel_2 = new JPanel();
+		panel_2.setLayout( new BoxLayout( panel_2, BoxLayout.PAGE_AXIS ));
 		tabbedPane.addTab( ConfLang.Pane_RecepeEdit, null, panel_2, null );
 		
 		JPanel panel_3 = new JPanel();
@@ -257,10 +258,14 @@ public class CoreClient {
 		 * panel 2
 		 * 
 		 */
-		JPanel panel2_panel = new JPanel();		
+		JPanel panel2_panel = new JPanel();
 		panel_2.add( panel2_panel );
+		JPanel panel2_panel2 = new JPanel();
+		panel2_panel2.setLayout( new BoxLayout( panel2_panel2, BoxLayout.PAGE_AXIS ));
+		panel2_panel2.setBorder(new EmptyBorder(10, 10, 10, 10));
+		panel_2.add( panel2_panel2 );
 		
-		loadPanel2( panel2_panel );
+		loadPanel2( panel2_panel, panel2_panel2 );
 		
 
 		/*
@@ -286,7 +291,7 @@ public class CoreClient {
 				int index = sourceTabbedPane.getSelectedIndex();
 				
 				if( ConfLang.Pane_RecepeEdit.equals( sourceTabbedPane.getTitleAt(index) ) ){
-					loadPanel2( panel2_panel );
+					loadPanel2( panel2_panel, panel2_panel2 );
 				}
 				
 			}
@@ -424,12 +429,13 @@ public class CoreClient {
 		}//end else
 	}
 
-	public void loadPanel2( JPanel panel2_panel ){
+	public void loadPanel2( JPanel panel2_panel, JPanel panel2_panel2 ){
 		JTextField field_name;
 		JComboBox field_category;
 		JTextArea field_recipe;
 		
 		panel2_panel.removeAll();
+		panel2_panel2.removeAll();
 		
 		if( RecipeStorage.getRecipe( SelectedRecipeID ) == null ){
 			//title
@@ -518,15 +524,86 @@ public class CoreClient {
 		    gbContainer.weightx = 0.0;
 		    gbContainer.fill = GridBagConstraints.NONE;
 		    
+		    
+		    
+		    
+		    /**
+		     * 
+		     * ingredient tab
+		     * 
+		     */
+		    
+		    if( ! recipe.getIngredients().isEmpty() ){
+				//title
+				titlePanel = new JPanel();
+				titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+				
+				label = new JLabel( "Sastavdaljas:" );
+				titlePanel.add( label );
+				panel2_panel2.add( titlePanel );
+				
+				
+				/**
+				 * 
+				 * table
+				 * 
+				 */
+				
+				Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
+				
+				
+				String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
+				int tmp = 0;
+				for( Ingredient ingredient : recipe.getIngredients() ){
+					tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
+					tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
+					tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
+					tmp++;
+				}
+				
+				// table
+				JTable recipeTable3 = new JTable( tableIngredients, columnNames2 );
+				JScrollPane recipeScrollPanel3 = new JScrollPane();
+				
+				recipeTable3.setColumnSelectionAllowed( false );
+				recipeTable3.setShowHorizontalLines( true );
+				recipeTable3.setShowVerticalLines( false );
+		
+				
+				recipeTable3.setSelectionForeground( Color.white );
+				recipeTable3.setSelectionBackground( Color.red );
+				recipeScrollPanel3 = new JScrollPane();
+				recipeScrollPanel3 = recipeTable3.createScrollPaneForTable( recipeTable3 );
+								
+				tableDimension = new Dimension( (int)panel2_panel.getSize().getWidth(), 125 );
+								
+				recipeTable3.setPreferredScrollableViewportSize( tableDimension );
+				recipeTable3.setFillsViewportHeight( true );
+				// table end
+				
+				panel2_panel2.add( recipeScrollPanel3 );
+				
+				
+			}
+		    
+		    /*
+		     * 
+		     * pogas
+		     * 
+		     */
+		    
+		    JPanel buttonPanel = new JPanel();
+		    panel2_panel2.add( buttonPanel );
+		    
 		    JButton submitButton = new JButton("Save Recipe");
 		    submitButton.setMargin( new Insets(2,10,2,10) );
 
-		    panel2_panel.add( submitButton );
+		    buttonPanel.add( submitButton );
 		    
 		    submitButton.addActionListener( new ActionListener(){
 		   		@Override
 		   		public void actionPerformed( ActionEvent event ) {
-		   			if( field_name.getText().isEmpty() || field_category.getText().isEmpty() || field_recipe.getText().isEmpty() ){
+		   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
 		   				showThis( "Visiem laukiem jabut aizpilditiem" );
 		   			}
 		   			else if( ! isValidName( field_name.getText() ) ){
@@ -544,6 +621,50 @@ public class CoreClient {
 		   			}
 		   		}
 		   	});
+		    
+		    //
+		    
+		    JButton submitButton2 = new JButton("Save Ingredients");
+		    submitButton.setMargin( new Insets(2,10,2,10) );
+
+		    buttonPanel.add( submitButton2 );
+		    
+		    submitButton2.addActionListener( new ActionListener(){
+		   		@Override
+		   		public void actionPerformed( ActionEvent event ) {
+		   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
+		   				showThis( "Visiem laukiem jabut aizpilditiem" );
+		   			}
+		   			else if( ! isValidName( field_name.getText() ) ){
+		   				showThis( "Problemas ar kategorijas notiekshanu!" );
+		   			}
+		   			else if( isNumber( field_id.getText() ) && isNumber( field_age.getText() ) ){
+		   				String[] name = field_name.getText().split( " " );
+		   				int id = Integer.parseInt(field_id.getText());
+		   				short age = (short) Integer.parseInt(field_id.getText());
+		   				//Main.addNewPatient( new Patient( id, name[0], name[1], age, new ArrayList<Appointment>() ) );
+		   				//frameHospitalMenu();
+		   			}
+		   			else{
+			   			System.out.println( "Nav norâdîts parezs id un/vai age" );
+		   			}
+		   		}
+		   	});
+		    
+		    //
+		    
+		    JButton submitButton3 = new JButton("Reset");
+		    submitButton.setMargin( new Insets(2,10,2,10) );
+
+		    buttonPanel.add( submitButton3 );
+		    
+		    submitButton3.addActionListener( new ActionListener(){
+		   		@Override
+		   		public void actionPerformed( ActionEvent event ) {
+		   			loadPanel2( panel2_panel, panel2_panel2 );
+		   		}
+		   	});
+		    
 		    
 		}
 	}
