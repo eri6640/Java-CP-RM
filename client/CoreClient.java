@@ -49,6 +49,7 @@ public class CoreClient {
 	
 	public static int ActionID = 0;
 	private static JFrame frame;
+	private static Client client;
 	
 	public static RecipesArray RecipeStorage = new RecipesArray();
 	public static CategoryArray CategoryStorage = new CategoryArray();
@@ -57,7 +58,7 @@ public class CoreClient {
 
 	public static void main( String[] args ){
 		
-		Client client = new Client();
+		client = new Client();
 		new Thread( client ).start();
 	    try {
 			client.connect(5000, "localhost", 54555, 54777);
@@ -106,7 +107,7 @@ public class CoreClient {
 	}
 	
 	public static void showWarning( String title, String msg ){
-		JOptionPane.showMessageDialog( frame, title, msg, JOptionPane.WARNING_MESSAGE );
+		JOptionPane.showMessageDialog( frame, msg, title, JOptionPane.WARNING_MESSAGE );
 	}
 	
 	private JPanel titlePanel;
@@ -163,86 +164,7 @@ public class CoreClient {
 		panel_1.add( panel1_right );
 		
 		
-		//title
-		titlePanel = new JPanel();
-		titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		
-		label = new JLabel( "Receptes:" );
-		titlePanel.add( label );
-		panel1_left1.add( titlePanel );
-		//title end
-		
-		/**
-		 * 
-		 * table
-		 * 
-		 */
-		
-		Object columnNames[] = { "Recepte", "Kategorija" };
-		
-		String[][] dataValues = new String[100][2];
-
-		for( int iY = 0; iY < 100; iY++ ){
-			for( int iX = 0; iX < 2; iX++ ){
-				dataValues[iY][iX] = "" + iX + "," + iY;
-			}
-		}
-		
-		String[][] tableRecipes = new String[ RecipeStorage.size() ][2];
-		int tmp = 0;
-		for( Recipe recipe : RecipeStorage.getList().values() ){
-			tableRecipes[ tmp ][ 0 ] = recipe.getRID() + "-" + recipe.getName();
-			tableRecipes[ tmp ][ 1 ] = CategoryStorage.getCategory( recipe.getCID() ) + "";
-			tmp++;
-		}
-		
-		// table
-		JTable recipeTable = new JTable( tableRecipes, columnNames ) {
-	        private static final long serialVersionUID = 1L;
-
-	        public boolean isCellEditable(int row, int column) {                
-	                return false;               
-	        };
-	    };
-		JScrollPane recipeScrollPanel = new JScrollPane();
-		
-		recipeTable.setColumnSelectionAllowed( false );
-		recipeTable.setShowHorizontalLines( true );
-		recipeTable.setShowVerticalLines( false );
-
-		
-		recipeTable.setSelectionForeground( Color.white );
-		recipeTable.setSelectionBackground( Color.red );
-		recipeScrollPanel = new JScrollPane();
-		recipeScrollPanel = recipeTable.createScrollPaneForTable( recipeTable );
-						
-		tableDimension = new Dimension( 250, 350 );
-						
-		recipeTable.setPreferredScrollableViewportSize( tableDimension );
-		recipeTable.setFillsViewportHeight( true );
-		// table end
-		
-		panel1_left1.add( recipeScrollPanel );
-		
-		JButton selectRecipeButton = new JButton("Select");
-		selectRecipeButton.setVerticalAlignment(SwingConstants.BOTTOM);
-		panel1_left1.add( selectRecipeButton );
-		
-		selectRecipeButton.addActionListener( new ActionListener(){
-	   		@Override
-	   		public void actionPerformed( ActionEvent event ) {
-	   			int selectedRows[] = recipeTable.getSelectedRows();
-	   			for ( int row_id : selectedRows ){
-	   				String selectedId = (String) recipeTable.getModel().getValueAt( row_id, 0 );
-	   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );
-	   				
-	   				loadPanel1Right1( panel1_right1 );
-	   				
-		   		    showThis( selectedId );
-	   			}
-	   		    
-	   		}
-	   	});
+		loadPanel1Left1( panel1_left1, panel1_right1 );
 		
 		
 		/*
@@ -290,6 +212,10 @@ public class CoreClient {
 				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
 				int index = sourceTabbedPane.getSelectedIndex();
 				
+				if( ConfLang.Pane_Recepes.equals( sourceTabbedPane.getTitleAt(index) ) ){
+					loadPanel1Left1( panel1_left1, panel1_right1 );
+					loadPanel1Right1( panel1_right1 );
+				}
 				if( ConfLang.Pane_RecepeEdit.equals( sourceTabbedPane.getTitleAt(index) ) ){
 					loadPanel2( panel2_panel, panel2_panel2 );
 				}
@@ -427,6 +353,91 @@ public class CoreClient {
 				panel1_right1.add( recipeScrollPanel2 );
 			}
 		}//end else
+	}
+	public void loadPanel1Left1( JPanel panel1_left1, JPanel panel1_right1 ){
+		
+		panel1_left1.removeAll();
+		
+		//title
+				titlePanel = new JPanel();
+				titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+				
+				label = new JLabel( "Receptes:" );
+				titlePanel.add( label );
+				panel1_left1.add( titlePanel );
+				//title end
+				
+				/**
+				 * 
+				 * table
+				 * 
+				 */
+				
+				Object columnNames[] = { "Recepte", "Kategorija" };
+				
+				String[][] dataValues = new String[100][2];
+
+				for( int iY = 0; iY < 100; iY++ ){
+					for( int iX = 0; iX < 2; iX++ ){
+						dataValues[iY][iX] = "" + iX + "," + iY;
+					}
+				}
+				
+				String[][] tableRecipes = new String[ RecipeStorage.size() ][2];
+				int tmp = 0;
+				for( Recipe recipe : RecipeStorage.getList().values() ){
+					tableRecipes[ tmp ][ 0 ] = recipe.getRID() + "-" + recipe.getName();
+					tableRecipes[ tmp ][ 1 ] = CategoryStorage.getCategory( recipe.getCID() ) + "";
+					tmp++;
+				}
+				
+				// table
+				JTable recipeTable = new JTable( tableRecipes, columnNames ) {
+			        private static final long serialVersionUID = 1L;
+
+			        public boolean isCellEditable(int row, int column) {                
+			                return false;               
+			        };
+			    };
+				JScrollPane recipeScrollPanel = new JScrollPane();
+				
+				recipeTable.setColumnSelectionAllowed( false );
+				recipeTable.setShowHorizontalLines( true );
+				recipeTable.setShowVerticalLines( false );
+
+				
+				recipeTable.setSelectionForeground( Color.white );
+				recipeTable.setSelectionBackground( Color.red );
+				recipeScrollPanel = new JScrollPane();
+				recipeScrollPanel = recipeTable.createScrollPaneForTable( recipeTable );
+								
+				tableDimension = new Dimension( 250, 350 );
+								
+				recipeTable.setPreferredScrollableViewportSize( tableDimension );
+				recipeTable.setFillsViewportHeight( true );
+				// table end
+				
+				panel1_left1.add( recipeScrollPanel );
+				
+				JButton selectRecipeButton = new JButton("Select");
+				selectRecipeButton.setVerticalAlignment(SwingConstants.BOTTOM);
+				panel1_left1.add( selectRecipeButton );
+				
+				selectRecipeButton.addActionListener( new ActionListener(){
+			   		@Override
+			   		public void actionPerformed( ActionEvent event ) {
+			   			int selectedRows[] = recipeTable.getSelectedRows();
+			   			for ( int row_id : selectedRows ){
+			   				String selectedId = (String) recipeTable.getModel().getValueAt( row_id, 0 );
+			   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );
+			   				
+			   				loadPanel1Right1( panel1_right1 );
+			   				
+				   		    showThis( selectedId );
+			   			}
+			   		    
+			   		}
+			   	});
 	}
 
 	public void loadPanel2( JPanel panel2_panel, JPanel panel2_panel2 ){
@@ -600,7 +611,9 @@ public class CoreClient {
 		    
 		    JPanel buttonPanel = new JPanel();
 		    panel2_panel2.add( buttonPanel );
-		    
+		    /*
+		     * SAVE SAVE SAVE
+		     */
 		    JButton submitButton = new JButton("Save Recipe");
 		    submitButton.setMargin( new Insets(2,10,2,10) );
 
@@ -611,25 +624,28 @@ public class CoreClient {
 		   		public void actionPerformed( ActionEvent event ) {
 		   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
 		   				showThis( "Visiem laukiem jabut aizpilditiem" );
+		   				showWarning( "Warning", "Visiem laukiem jabut aizpilditiem!" );
 		   			}
-		   			else if( ! isValidName( field_name.getText() ) ){
-		   				showThis( "Problemas ar kategorijas notiekshanu!" );
-		   			}
-		   			else if( isNumber( field_id.getText() ) && isNumber( field_age.getText() ) ){
-		   				String[] name = field_name.getText().split( " " );
-		   				int id = Integer.parseInt(field_id.getText());
-		   				short age = (short) Integer.parseInt(field_id.getText());
-		   				//Main.addNewPatient( new Patient( id, name[0], name[1], age, new ArrayList<Appointment>() ) );
-		   				//frameHospitalMenu();
+		   			else if( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ) == 0 ){
+		   				showThis( "Problemas ar kategorijas noteikshanu!" );
+		   				showWarning( "Warning", "Problemas ar kategorijas noteikshanu!" );
 		   			}
 		   			else{
-			   			System.out.println( "Nav norâdîts parezs id un/vai age" );
+		   				
+		   				recipe.setName( field_name.getText() );
+		   				recipe.setCategory( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ) );
+		   				recipe.setRecipe( field_recipe.getText() );
+		   				
+		   				client.sendTCP( new ActionData( getActID(), ConfActions.ActEditRecipeData, recipe ) );
 		   			}
 		   		}
 		   	});
 		    
 		    //
-		    
+
+		    /*
+		     * RESET RESET RESET
+		     */
 		    JButton submitButton3 = new JButton("Reset");
 		    submitButton.setMargin( new Insets(2,10,2,10) );
 
@@ -657,18 +673,19 @@ public class CoreClient {
 		   	});
 		    
 		    //
-		    
-		    JButton submitButton5 = new JButton("Del Selected Ingredients");
-		    submitButton.setMargin( new Insets(2,10,2,10) );
-
-		    buttonPanel.add( submitButton5 );
-		    
-		    submitButton5.addActionListener( new ActionListener(){
-		   		@Override
-		   		public void actionPerformed( ActionEvent event ) {
-		   			loadPanel2( panel2_panel, panel2_panel2 );
-		   		}
-		   	});
+		    if( ! recipe.getIngredients().isEmpty() ){
+			    JButton submitButton5 = new JButton("Del Selected Ingredients");
+			    submitButton.setMargin( new Insets(2,10,2,10) );
+	
+			    buttonPanel.add( submitButton5 );
+			    
+			    submitButton5.addActionListener( new ActionListener(){
+			   		@Override
+			   		public void actionPerformed( ActionEvent event ) {
+			   			loadPanel2( panel2_panel, panel2_panel2 );
+			   		}
+			   	});
+		    }
 		    
 		    
 		}

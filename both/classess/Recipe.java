@@ -67,6 +67,9 @@ public class Recipe {
 	public void setRecipe( String recipe_recipe ){
 		this.recipe_recipe = recipe_recipe;
 	}
+	public void setCategory( int category_id ){
+		this.category_id = category_id;
+	}
 	public void setIngredients( ArrayList<Ingredient> ingredient_list ){
 		if( ! ingredient_list.isEmpty() ){
 			if( ! this.ingredient_list.isEmpty() ) ingredient_list.clear(); // ja ir kaut kas... iztiram
