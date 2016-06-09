@@ -14,36 +14,37 @@ public class ClientListener extends Listener {
 	public void received (Connection connection, Object object) {
 		if( object instanceof RecipesArray ){
 			CoreClient.RecipeStorage = (RecipesArray)object;
-			CoreServer.showThis( "Received RecipeStorage" );
+			CoreClient.showThis( "Received RecipeStorage" );
 		}
 		else if( object instanceof ActionData ){
         	ActionData data = (ActionData)object;
         	
         	switch( data.getAction() ){
 	    		case ConfActions.ActGetData :{
-	    			CoreServer.showThis( "ActGetData atbilde" );
-	    			if( data.isSuccess() ) CoreServer.showThis( "success" );
-	    			else CoreServer.showThis( "! success" );
+	    			CoreClient.showThis( "ActGetData atbilde" );
+	    			if( data.isSuccess() ) CoreClient.showThis( "success" );
+	    			else CoreClient.showThis( "! success" );
+	    			CoreClient.showWarning( "title", "asdfdsaf" );
 	    			break;
 	    		}
 	    		case ConfActions.ActAddRecipeData :{
-	    			CoreServer.showThis( "ActAddRecipeData atbilde" );
+	    			CoreClient.showThis( "ActAddRecipeData atbilde" );
 	    			break;
 	    		}
 	    		case ConfActions.ActAddIngredientData :{
-	    			CoreServer.showThis( "ActAddIngredientData atbilde" );
+	    			CoreClient.showThis( "ActAddIngredientData atbilde" );
 	    			break;
 	    		}
 	    		case ConfActions.ActEditRecipeData :{
-	    			CoreServer.showThis( "ActEditRecipeData atbilde" );
+	    			CoreClient.showThis( "ActEditRecipeData atbilde" );
 	    			break;
 	    		}
 	    		case ConfActions.ActDelRecipeData :{
-	    			CoreServer.showThis( "ActDelRecipeData atbilde" );
+	    			CoreClient.showThis( "ActDelRecipeData atbilde" );
 	    			break;
 	    		}
 	    		case ConfActions.ActDelIngredientData :{
-	    			CoreServer.showThis( "ActDelIngredientData atbilde" );
+	    			CoreClient.showThis( "ActDelIngredientData atbilde" );
 	    			break;
 	    		}
     		

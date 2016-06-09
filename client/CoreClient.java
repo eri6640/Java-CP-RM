@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -37,8 +38,9 @@ import com.esotericsoftware.kryonet.Listener;
 public class CoreClient {
 	
 	public static int ActionID = 0;
-	private JFrame frame;
+	private static JFrame frame;
 	public static RecipesArray RecipeStorage = new RecipesArray();
+	public static int SelectedRecipeID = 0;
 
 	public static void main( String[] args ){
 		
@@ -89,6 +91,10 @@ public class CoreClient {
 		initializeGUI();
 	}
 	
+	public static void showWarning( String title, String msg ){
+		JOptionPane.showMessageDialog( frame, title, msg, JOptionPane.WARNING_MESSAGE );
+	}
+	
 	private JPanel titlePanel;
 	private JLabel label;
 	Dimension tableDimension;
@@ -105,10 +111,13 @@ public class CoreClient {
 		tabbedPane.addTab("Receptes", null, panel_1, null);
 		
 		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("Receptes izveide", null, panel_2, null);
+		tabbedPane.addTab("Receptes laboshana", null, panel_2, null);
 		
 		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Export / Import", null, panel_3, null);
+		tabbedPane.addTab("Receptes izveide", null, panel_3, null);
+		
+		JPanel panel_4 = new JPanel();
+		tabbedPane.addTab("Export / Import", null, panel_4, null);
 		
 		/*
 		 * 
@@ -201,82 +210,13 @@ public class CoreClient {
 		panel1_left1.add( recipeScrollPanel );
 		
 		
-		// right side
-		
-		//title
-		titlePanel = new JPanel();
-		titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
-				
-		label = new JLabel( "Izveleta recepte:" );
-		titlePanel.add( label );
-		panel1_right1.add( titlePanel );
-		//title end
-		
-		JTextArea recepi_text = new JTextArea( 1, 40 );
-		panel1_right1.add( recepi_text );
-		
-		recepi_text.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
-		recepi_text.setLineWrap( true );
-		recepi_text.setWrapStyleWord(true);
-		recepi_text.setMargin(new Insets(10,10,10,10));
-		
-		recepi_text.append( "Recepte: Pankukas\n\n" );
-		recepi_text.append( "Kategorija: Pankukas\n\n" );
-		recepi_text.append( "Apraksts: The code shown in bold illustrates how theselection is created. The caret is first set to the end of the complete word, then moved back to a position after the last character typed. The moveCaretPosition method not only moves the caret to a new position but also selects the text between the two positions. The completion task is implemented with the following code:" );
-		
-		//title
-		titlePanel = new JPanel();
-		titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
-		
-		label = new JLabel( "Sastavdaljas:" );
-		titlePanel.add( label );
-		panel1_right1.add( titlePanel );
-		
-		
-		/**
+		/*
 		 * 
-		 * table
+		 * panel1_right1
 		 * 
 		 */
 		
-		Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
-		
-		String[][] dataValues2 = new String[100][3];
-
-		for( int iY = 0; iY < 100; iY++ ){
-			for( int iX = 0; iX < 3; iX++ ){
-				dataValues2[iY][iX] = "" + iX + "," + iY;
-			}
-		}
-		
-		// table
-		JTable recipeTable2 = new JTable( dataValues2, columnNames2 ) {
-	        private static final long serialVersionUID = 1L;
-
-	        public boolean isCellEditable(int row, int column) {                
-	                return false;               
-	        };
-	    };
-		JScrollPane recipeScrollPanel2 = new JScrollPane();
-		
-		recipeTable2.setColumnSelectionAllowed( false );
-		recipeTable2.setShowHorizontalLines( true );
-		recipeTable2.setShowVerticalLines( false );
-
-		
-		recipeTable2.setSelectionForeground( Color.white );
-		recipeTable2.setSelectionBackground( Color.red );
-		recipeScrollPanel2 = new JScrollPane();
-		recipeScrollPanel2 = recipeTable2.createScrollPaneForTable( recipeTable2 );
-						
-		tableDimension = new Dimension( 250, 125 );
-						
-		recipeTable2.setPreferredScrollableViewportSize( tableDimension );
-		recipeTable2.setFillsViewportHeight( true );
-		// table end
-		
-		panel1_right1.add( recipeScrollPanel2 );
-		
+		loadPanel1Right1( panel1_right1 );
 
 		/*
 		 * 
@@ -341,6 +281,126 @@ public class CoreClient {
 		frame.setVisible(true);
 		
 	}// initializeGUI end
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	public void loadPanel1Right1( JPanel panel1_right1 ){
+
+		panel1_right1.removeAll();
+		
+		if( RecipeStorage.getRecipe( SelectedRecipeID ) == null ){
+			//title
+			titlePanel = new JPanel();
+			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+					
+			label = new JLabel( "Izveleta recepte:" );
+			titlePanel.add( label );
+			panel1_right1.add( titlePanel );
+			//title end
+			
+			JTextArea recepi_text = new JTextArea( 1, 40 );
+			panel1_right1.add( recepi_text );
+			
+			recepi_text.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
+			recepi_text.setLineWrap( true );
+			recepi_text.setWrapStyleWord(true);
+			recepi_text.setEditable( false );
+			recepi_text.setMargin(new Insets(10,10,10,10));
+			
+			recepi_text.append( "Nav izveleta neviena recepte vai ari netika atrasta izveleta recepte!" );
+			
+		}
+		else{
+		
+			//title
+			titlePanel = new JPanel();
+			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+					
+			label = new JLabel( "Izveleta recepte:" );
+			titlePanel.add( label );
+			panel1_right1.add( titlePanel );
+			//title end
+			
+			JTextArea recepi_text = new JTextArea( 1, 40 );
+			panel1_right1.add( recepi_text );
+			
+			recepi_text.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
+			recepi_text.setLineWrap( true );
+			recepi_text.setWrapStyleWord(true);
+			recepi_text.setEditable( false );
+			recepi_text.setMargin(new Insets(10,10,10,10));
+			
+			recepi_text.append( "Recepte: Pankukas\n\n" );
+			recepi_text.append( "Kategorija: Pankukas\n\n" );
+			recepi_text.append( "Apraksts: The code shown in bold illustrates how theselection is created. The caret is first set to the end of the complete word, then moved back to a position after the last character typed. The moveCaretPosition method not only moves the caret to a new position but also selects the text between the two positions. The completion task is implemented with the following code:" );
+			
+			//title
+			titlePanel = new JPanel();
+			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+			
+			label = new JLabel( "Sastavdaljas:" );
+			titlePanel.add( label );
+			panel1_right1.add( titlePanel );
+			
+			
+			/**
+			 * 
+			 * table
+			 * 
+			 */
+			
+			Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
+			
+			String[][] dataValues2 = new String[100][3];
+	
+			for( int iY = 0; iY < 100; iY++ ){
+				for( int iX = 0; iX < 3; iX++ ){
+					dataValues2[iY][iX] = "" + iX + "," + iY;
+				}
+			}
+			
+			// table
+			JTable recipeTable2 = new JTable( dataValues2, columnNames2 ) {
+		        private static final long serialVersionUID = 1L;
+	
+		        public boolean isCellEditable(int row, int column) {                
+		                return false;               
+		        };
+		    };
+			JScrollPane recipeScrollPanel2 = new JScrollPane();
+			
+			recipeTable2.setColumnSelectionAllowed( false );
+			recipeTable2.setShowHorizontalLines( true );
+			recipeTable2.setShowVerticalLines( false );
+	
+			
+			recipeTable2.setSelectionForeground( Color.white );
+			recipeTable2.setSelectionBackground( Color.red );
+			recipeScrollPanel2 = new JScrollPane();
+			recipeScrollPanel2 = recipeTable2.createScrollPaneForTable( recipeTable2 );
+							
+			tableDimension = new Dimension( 250, 125 );
+							
+			recipeTable2.setPreferredScrollableViewportSize( tableDimension );
+			recipeTable2.setFillsViewportHeight( true );
+			// table end
+			
+			panel1_right1.add( recipeScrollPanel2 );
+			
+		}//end else
+	}
 
 	
 }
