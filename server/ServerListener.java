@@ -1,5 +1,7 @@
 package server;
 
+import java.util.ArrayList;
+
 import server.mysql.MySQLActions;
 import both.classess.ActionData;
 import both.classess.Ingredient;
@@ -61,6 +63,17 @@ public class ServerListener extends Listener {
         		}
         		case ConfActions.ActDelIngredientData :{
         			CoreServer.showThis( "ActDelIngredientData pieprasijums" );
+        			ArrayList<Integer> ingredientDelList = data.getIngredients();
+        			
+        			MySQLActions.deleteIngredients( ingredientDelList );
+        			
+        			MySQLActions.loadAll();
+
+        			
+        			data.setSuccess();
+        			connection.sendTCP( CoreServer.RecipeStorage );
+        			connection.sendTCP( data );
+        			
         			break;
         		}
         		

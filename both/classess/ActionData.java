@@ -24,6 +24,9 @@ public class ActionData {
 	public ActionData( int action_id, int action, Ingredient ingredient ){
 		this( action_id, action, null, ingredient, null );
 	}
+	public ActionData( int action_id, int action, ArrayList<Integer> changed_ingredients ){
+		this( action_id, action, null, null, changed_ingredients );
+	}
 	public ActionData( int action_id, int action, Recipe recipe, Ingredient ingredient, ArrayList<Integer> changed_ingredients ){
 		this.action_id = action_id;
 		this.action = action;

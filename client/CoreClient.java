@@ -426,7 +426,7 @@ public class CoreClient {
 				selectRecipeButton.addActionListener( new ActionListener(){
 			   		@Override
 			   		public void actionPerformed( ActionEvent event ) {
-			   			if( recipeTable.getSelectedRows().length != 0 ){
+			   			if( recipeTable.getSelectedRows().length == 1 ){
 				   			int selectedRows[] = recipeTable.getSelectedRows();
 				   			//for ( int row_id : selectedRows ){
 				   			String selectedId = (String) recipeTable.getModel().getValueAt( selectedRows[0], 0 );
@@ -438,7 +438,7 @@ public class CoreClient {
 				   			//}			   				
 			   			}
 			   			else{
-			   				showWarning( "Warning", "Atlasishana bija neveiksmiga" );
+			   				showWarning( "Warning", "Atlasishana bija neveiksmiga!\nVar atlasit tikai vienu recepti." );
 			   			}
 			   		    
 			   		}
@@ -552,6 +552,25 @@ public class CoreClient {
 		     * ingredient tab
 		     * 
 		     */
+		    Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
+			
+			
+			String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
+			int tmp = 0;
+			for( Ingredient ingredient : recipe.getIngredients() ){
+				tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
+				tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
+				tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
+				tmp++;
+			}
+			
+		    JTable recipeTable3 = new JTable( tableIngredients, columnNames2 ) {
+		        private static final long serialVersionUID = 1L;
+				
+		        public boolean isCellEditable(int row, int column) {                
+		                return false;               
+		        };
+		    };
 		    
 		    if( ! recipe.getIngredients().isEmpty() ){
 				//title
@@ -573,26 +592,9 @@ public class CoreClient {
 				 * 
 				 */
 				
-				Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
-				
-				
-				String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
-				int tmp = 0;
-				for( Ingredient ingredient : recipe.getIngredients() ){
-					tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
-					tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
-					tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
-					tmp++;
-				}
 				
 				// table
-				JTable recipeTable3 = new JTable( tableIngredients, columnNames2 ) {
-			        private static final long serialVersionUID = 1L;
-		
-			        public boolean isCellEditable(int row, int column) {                
-			                return false;               
-			        };
-			    };
+				
 				JScrollPane recipeScrollPanel3 = new JScrollPane();
 				
 				recipeTable3.setColumnSelectionAllowed( false );
@@ -770,7 +772,27 @@ public class CoreClient {
 			    submitButton5.addActionListener( new ActionListener(){
 			   		@Override
 			   		public void actionPerformed( ActionEvent event ) {
-			   			loadPanel2( panel2_panel, panel2_panel2 );
+			   			if( recipeTable3.getSelectedRows().length > 0 ){
+				   			int selectedRows[] = recipeTable3.getSelectedRows();
+				   			ArrayList<Integer> ingredientDelList = new ArrayList<Integer>();
+				   			for ( int row_id : selectedRows ){
+					   			String selectedIngr = (String) recipeTable3.getModel().getValueAt( row_id, 0 );
+					   			
+					   			for( Ingredient ingredient : recipe.getIngredients() ){
+					   				if( ingredient.getIngredient().equals( selectedIngr ) ){
+					   					ingredientDelList.add( ingredient.getIID() );
+					   					showThis( ""+ ingredient.getIID());
+					   				}
+					   			}
+					   			
+					   				
+				   			}
+				   			client.sendTCP( new ActionData( getActID(), ConfActions.ActDelIngredientData, recipe, null, ingredientDelList ) );
+				   			loadPanel2( panel2_panel, panel2_panel2 );
+			   			}
+			   			else{
+			   				showWarning( "Warning", "Atlasishana bija neveiksmiga!\nVar atlasit tikai vienu recepti." );
+			   			}
 			   		}
 			   	});
 		    }

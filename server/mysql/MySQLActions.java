@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import both.classess.Ingredient;
 import both.classess.Recipe;
@@ -118,6 +119,8 @@ public class MySQLActions {
 		CoreServer.showThis( "Loaded " + ingredients + " ingredients!" );
 		//CoreServer.showThis( "1 " + CoreServer.RecipeStorage.getRecipe( 1 ).ingredientSize() );
 		
+		CoreServer.CategoryStorage.clear();
+		
 		try {
 			ps = (Statement) Connection.createStatement();
 		
@@ -230,6 +233,42 @@ public class MySQLActions {
 		}
 		
 		return index;
+
+	}
+	
+
+	
+	public static void deleteIngredients( ArrayList<Integer> ingredientDelList ) {
+		
+		Connection Connection = createConnection( "deleteIngredients()" );
+
+		/*
+		 * Ingredients
+		 */
+		
+		for( int index : ingredientDelList ){
+			try {
+				String query = "DELETE FROM `<table>` WHERE `id` = ?;".replaceAll( "<table>", table_ingredient );
+		    	
+		    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+		    	
+		    	preparedStatement.setInt( 1, index );
+		    	
+		    	preparedStatement.executeUpdate();
+		    	preparedStatement.close();
+			
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
 
 	}
 	

@@ -50,6 +50,7 @@ public class ClientListener extends Listener {
 	    		}
 	    		case ConfActions.ActDelIngredientData :{
 	    			CoreClient.showThis( "ActDelIngredientData atbilde" );
+	    			CoreClient.showWarning( "Warning", "Atlasitas sastavdaljas dzestas!" );
 	    			break;
 	    		}
     		
