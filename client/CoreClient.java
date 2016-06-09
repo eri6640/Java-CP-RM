@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 
 import server.ServerListener;
 import both.classess.ActionData;
+import both.classess.Ingredient;
 import both.classess.Recipe;
 import both.classess.RecipesArray;
 import both.conf.ConfActions;
@@ -40,7 +41,7 @@ public class CoreClient {
 	public static int ActionID = 0;
 	private static JFrame frame;
 	public static RecipesArray RecipeStorage = new RecipesArray();
-	public static int SelectedRecipeID = 0;
+	public static int SelectedRecipeID = 1;
 
 	public static void main( String[] args ){
 		
@@ -323,6 +324,8 @@ public class CoreClient {
 			
 		}
 		else{
+			
+			Recipe recipe = RecipeStorage.getRecipe( SelectedRecipeID );
 		
 			//title
 			titlePanel = new JPanel();
@@ -363,16 +366,18 @@ public class CoreClient {
 			
 			Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
 			
-			String[][] dataValues2 = new String[100][3];
-	
-			for( int iY = 0; iY < 100; iY++ ){
-				for( int iX = 0; iX < 3; iX++ ){
-					dataValues2[iY][iX] = "" + iX + "," + iY;
-				}
+			
+			String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
+			int tmp = 0;
+			for( Ingredient ingredient : recipe.getIngredients() ){
+				tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
+				tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
+				tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
+				tmp++;
 			}
 			
 			// table
-			JTable recipeTable2 = new JTable( dataValues2, columnNames2 ) {
+			JTable recipeTable2 = new JTable( tableIngredients, columnNames2 ) {
 		        private static final long serialVersionUID = 1L;
 	
 		        public boolean isCellEditable(int row, int column) {                
