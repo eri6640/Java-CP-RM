@@ -32,7 +32,8 @@ public class ClientListener extends Listener {
 	    			break;
 	    		}
 	    		case ConfActions.ActAddRecipeData :{
-	    			CoreClient.showThis( "ActAddRecipeData atbilde" );
+	    			CoreClient.showThis( "Recepte pievienota!\nTagad nepiecieshams pievienot sastavdalju sarakstu!" );
+	    			if( data.isSuccess() ) CoreClient.showWarning( "Warning", "Recepte pievienota!\nTagad nepiecieshams pievienot sastavdalju sarakstu!" );
 	    			break;
 	    		}
 	    		case ConfActions.ActAddIngredientData :{
@@ -41,7 +42,7 @@ public class ClientListener extends Listener {
 	    		}
 	    		case ConfActions.ActEditRecipeData :{
 	    			CoreClient.showThis( "ActEditRecipeData atbilde" );
-	    			CoreClient.showWarning( "Warning", "Dati veiksmîgi laboti!" );
+	    			if( data.isSuccess() ) CoreClient.showWarning( "Warning", "Dati veiksmîgi laboti!" );
 	    			break;
 	    		}
 	    		case ConfActions.ActDelRecipeData :{
@@ -50,7 +51,7 @@ public class ClientListener extends Listener {
 	    		}
 	    		case ConfActions.ActDelIngredientData :{
 	    			CoreClient.showThis( "ActDelIngredientData atbilde" );
-	    			CoreClient.showWarning( "Warning", "Atlasitas sastavdaljas dzestas!" );
+	    			if( data.isSuccess() ) CoreClient.showWarning( "Warning", "Atlasitas sastavdaljas dzestas!" );
 	    			break;
 	    		}
     		

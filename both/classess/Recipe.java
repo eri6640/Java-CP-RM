@@ -55,6 +55,9 @@ public class Recipe {
 	 * 
 	 * 
 	 */
+	public void setID( int recipe_id ){
+		this.recipe_id = recipe_id;
+	}
 	public void setName( String recipe_name ){
 		this.recipe_name = recipe_name;
 	}

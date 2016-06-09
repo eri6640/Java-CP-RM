@@ -31,7 +31,18 @@ public class ServerListener extends Listener {
         		case ConfActions.ActAddRecipeData :{
         			CoreServer.showThis( "ActAddRecipeData pieprasijums" );
         			Recipe recipe = data.getRecipe();
-        			
+        			int index = 0;
+        			if( ( index = MySQLActions.addRecipe( recipe ) ) > 0 ){
+        				recipe.setID( index );
+        				
+        				CoreServer.RecipeStorage.addRecipe( recipe );
+
+            			data.setSuccess();
+            			connection.sendTCP( CoreServer.RecipeStorage );
+            			connection.sendTCP( CoreServer.CategoryStorage );
+            			connection.sendTCP( data );
+        			}
+        			else connection.sendTCP( data );
         			break;
         		}
         		case ConfActions.ActAddIngredientData :{
