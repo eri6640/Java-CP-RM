@@ -1,6 +1,8 @@
 package server;
 
+import server.mysql.MySQLActions;
 import both.classess.ActionData;
+import both.classess.Recipe;
 import both.conf.ConfActions;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -33,6 +35,13 @@ public class ServerListener extends Listener {
         		}
         		case ConfActions.ActEditRecipeData :{
         			CoreServer.showThis( "ActEditRecipeData pieprasijums" );
+        			Recipe recipe = data.getRecipe();
+        			if( CoreServer.RecipeStorage.replace( recipe ) && MySQLActions.updateRecipe( recipe ) ){
+
+            			data.setSuccess();
+            			connection.sendTCP( CoreServer.RecipeStorage );
+            			connection.sendTCP( data );
+        			}
         			break;
         		}
         		case ConfActions.ActDelRecipeData :{

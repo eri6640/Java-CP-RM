@@ -1,6 +1,7 @@
 package server.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -149,6 +150,46 @@ public class MySQLActions {
 		} catch (SQLException e2) {
 			e2.printStackTrace();
 		}
+
+	}
+	
+
+	public static boolean updateRecipe( Recipe recipe ) {
+		
+		Statement ps;
+		Connection Connection = createConnection( "updateRecipe()" );
+		
+		try {			
+			String query = "UPDATE `<table>` SET `category_id` = ?, `name` = ?, `recipe` = ? WHERE `id` = ?;".replaceAll( "<table>", table_recipe );;
+	    	
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+	    	
+	    	preparedStatement.setInt( 1, recipe.getCID() );
+	    	preparedStatement.setString( 2, recipe.getName() );
+	    	preparedStatement.setString( 3, recipe.getRecipe() );
+	    	preparedStatement.setInt( 4, recipe.getRID() );
+	    	
+	    	preparedStatement.executeUpdate();
+	    	preparedStatement.close();
+			
+			Connection.close();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		CoreServer.showThis( "bljup" );
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		
+		return true;
 
 	}
 	

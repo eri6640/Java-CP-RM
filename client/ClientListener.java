@@ -29,7 +29,6 @@ public class ClientListener extends Listener {
 	    			CoreClient.showThis( "ActGetData atbilde" );
 	    			if( data.isSuccess() ) CoreClient.showThis( "success" );
 	    			else CoreClient.showThis( "! success" );
-	    			CoreClient.showWarning( "title", "asdfdsaf" );
 	    			break;
 	    		}
 	    		case ConfActions.ActAddRecipeData :{
@@ -42,6 +41,7 @@ public class ClientListener extends Listener {
 	    		}
 	    		case ConfActions.ActEditRecipeData :{
 	    			CoreClient.showThis( "ActEditRecipeData atbilde" );
+	    			CoreClient.showWarning( "Warning", "Dati veiksmîgi laboti!" );
 	    			break;
 	    		}
 	    		case ConfActions.ActDelRecipeData :{

@@ -48,6 +48,14 @@ public class RecipesArray {
 		return recipe.addIngredient( ingredient );
 	}
 	
+	public boolean replace( Recipe recipe ){
+		
+		if( getRecipe( recipe.getRID() ) == null ) return false;
+		list.remove( recipe.getRID() );
+		
+		return addRecipe( recipe );		
+	}
+	
 	
 	//
 	
