@@ -27,6 +27,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import server.ServerListener;
 import both.classess.ActionData;
@@ -34,6 +36,7 @@ import both.classess.Ingredient;
 import both.classess.Recipe;
 import both.classess.RecipesArray;
 import both.conf.ConfActions;
+import both.conf.ConfLang;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -112,16 +115,16 @@ public class CoreClient {
 		frame.getContentPane().add( tabbedPane, BorderLayout.NORTH );
 		
 		JPanel panel_1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-		tabbedPane.addTab("Receptes", null, panel_1, null);
+		tabbedPane.addTab( ConfLang.Pane_Recepes, null, panel_1, null );
 		
 		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("Receptes laboshana", null, panel_2, null);
+		tabbedPane.addTab( ConfLang.Pane_RecepeEdit, null, panel_2, null );
 		
 		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Receptes izveide", null, panel_3, null);
+		tabbedPane.addTab( ConfLang.Pane_RecepesAdd, null, panel_3, null );
 		
 		JPanel panel_4 = new JPanel();
-		tabbedPane.addTab("Export / Import", null, panel_4, null);
+		tabbedPane.addTab( ConfLang.Pane_ExImport, null, panel_4, null );
 		
 		/*
 		 * 
@@ -223,9 +226,10 @@ public class CoreClient {
 	   			int selectedRows[] = recipeTable.getSelectedRows();
 	   			for ( int row_id : selectedRows ){
 	   				String selectedId = (String) recipeTable.getModel().getValueAt( row_id, 0 );
-	   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );;
+	   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );
+	   				
 	   				loadPanel1Right1( panel1_right1 );
-		   			
+	   				
 		   		    showThis( selectedId );
 	   			}
 	   		    
@@ -246,51 +250,10 @@ public class CoreClient {
 		 * panel 2
 		 * 
 		 */
-		JTextField field_id;
-		JTextField field_name;
-		JTextField field_age;
-		
-		JPanel panel2_panel = new JPanel();
-		panel2_panel.setLayout(new GridBagLayout());
-	    GridBagConstraints gbContainer = new GridBagConstraints();
-
-	    gbContainer.gridx = 0;
-	    gbContainer.gridy = GridBagConstraints.RELATIVE;
-	    gbContainer.gridwidth = 1;
-	    gbContainer.gridheight = 1;
-	    gbContainer.insets = new Insets(3, 20, 3, 20);
-	    gbContainer.anchor = GridBagConstraints.EAST;
-
-	    panel2_panel.add(label = new JLabel("Id:", SwingConstants.RIGHT), gbContainer);
-	    label.setDisplayedMnemonic('n');
-	    panel2_panel.add(label = new JLabel("Name Surname:", SwingConstants.RIGHT), gbContainer);
-	    label.setDisplayedMnemonic('h');
-	    panel2_panel.add(label = new JLabel("Age:", SwingConstants.RIGHT), gbContainer);
-	    label.setDisplayedMnemonic('c');
-
-	    gbContainer.gridx = 1;
-	    gbContainer.gridy = 0;
-	    gbContainer.weightx = 1.0;
-	    gbContainer.fill = GridBagConstraints.HORIZONTAL;
-	    gbContainer.anchor = GridBagConstraints.CENTER;
-
-	    panel2_panel.add(field_id = new JTextField(35), gbContainer);
-	    field_id.setFocusAccelerator('n');
-	    gbContainer.gridx = 1;
-	    gbContainer.gridy = GridBagConstraints.RELATIVE;
-	    panel2_panel.add(field_name = new JTextField(35), gbContainer);
-	    field_name.setText( "Value" );
-	    field_name.setFocusAccelerator('h');
-	    panel2_panel.add(field_age = new JTextField(35), gbContainer);
-	    field_age.setFocusAccelerator('c');
-	    gbContainer.weightx = 0.0;
-	    gbContainer.fill = GridBagConstraints.NONE;
-	    
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.setMargin( new Insets(2,10,2,10) );
-		
-		
+		JPanel panel2_panel = new JPanel();		
 		panel_2.add( panel2_panel );
+		
+		loadPanel2( panel2_panel );
 		
 
 		/*
@@ -308,6 +271,21 @@ public class CoreClient {
 		 * footer
 		 * 
 		 */
+		
+		tabbedPane.addChangeListener( new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent changeEvent) {
+				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+				int index = sourceTabbedPane.getSelectedIndex();
+				
+				if( ConfLang.Pane_RecepeEdit.equals( sourceTabbedPane.getTitleAt(index) ) ){
+					loadPanel2( panel2_panel );
+				}
+				
+			}
+		});
+		
+		
 		frame.pack();
 		frame.setMinimumSize( frame.getSize() );
 		frame.setVisible(true);
@@ -439,5 +417,90 @@ public class CoreClient {
 		}//end else
 	}
 
+	public void loadPanel2( JPanel panel2_panel ){
+		JTextField field_name;
+		JTextField field_category;
+		JTextArea field_recipe;
+		
+		panel2_panel.removeAll();
+		
+		if( RecipeStorage.getRecipe( SelectedRecipeID ) == null ){
+			//title
+			titlePanel = new JPanel();
+			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+					
+			label = new JLabel( "Izveleta recepte:" );
+			titlePanel.add( label );
+			panel2_panel.add( titlePanel );
+			//title end
+			
+			JTextArea recepi_text = new JTextArea( 1, 40 );
+			panel2_panel.add( recepi_text );
+			
+			recepi_text.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
+			recepi_text.setLineWrap( true );
+			recepi_text.setWrapStyleWord(true);
+			recepi_text.setEditable( false );
+			recepi_text.setMargin(new Insets(10,10,10,10));
+			
+			recepi_text.append( "Nav izveleta neviena recepte vai ari netika atrasta izveleta recepte!" );
+			
+		}
+		else{
+			
+			Recipe recipe = RecipeStorage.getRecipe( SelectedRecipeID );
+		
+			panel2_panel.setLayout(new GridBagLayout());
+		    GridBagConstraints gbContainer = new GridBagConstraints();
 	
+		    gbContainer.gridx = 0;
+		    gbContainer.gridy = GridBagConstraints.RELATIVE;
+		    gbContainer.gridwidth = 1;
+		    gbContainer.gridheight = 1;
+		    gbContainer.insets = new Insets(3, 20, 3, 20);
+		    gbContainer.anchor = GridBagConstraints.EAST;
+	
+		    panel2_panel.add(label = new JLabel("Nosaukums:", SwingConstants.RIGHT), gbContainer);
+		    label.setDisplayedMnemonic('n');
+		    panel2_panel.add(label = new JLabel("Kategorija:", SwingConstants.RIGHT), gbContainer);
+		    label.setDisplayedMnemonic('h');
+		    panel2_panel.add(label = new JLabel("Recepte:", SwingConstants.RIGHT), gbContainer);
+		    label.setDisplayedMnemonic('c');
+	
+		    gbContainer.gridx = 1;
+		    gbContainer.gridy = 0;
+		    gbContainer.weightx = 1.0;
+		    gbContainer.fill = GridBagConstraints.HORIZONTAL;
+		    gbContainer.anchor = GridBagConstraints.CENTER;
+	
+		    panel2_panel.add( field_name = new JTextField(35), gbContainer);
+		    field_name.setFocusAccelerator('n');
+		    gbContainer.gridx = 1;
+		    gbContainer.gridy = GridBagConstraints.RELATIVE;
+		    panel2_panel.add( field_category = new JTextField(35), gbContainer);
+		    field_category.setFocusAccelerator('h');
+		    panel2_panel.add( field_recipe = new JTextArea( 1, 40 ), gbContainer);
+		    field_recipe.setFocusAccelerator('c');
+		    
+		    field_recipe.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
+		    field_recipe.setLineWrap( true );
+		    field_recipe.setWrapStyleWord(true);
+		    field_recipe.setMargin(new Insets(10,10,10,10));
+			
+		    field_name.setText( recipe.getRecipe() );
+		    field_category.setText( recipe.getRecipe() );
+		    field_recipe.append( recipe.getRecipe() );
+		    
+		    gbContainer.weightx = 0.0;
+		    gbContainer.fill = GridBagConstraints.NONE;
+		    
+		    JButton submitButton = new JButton("Submit");
+		    submitButton.setMargin( new Insets(2,10,2,10) );
+		    
+		    
+		    //set values
+		    field_name.setText( "Value" );
+		    
+		}
+	}
 }
