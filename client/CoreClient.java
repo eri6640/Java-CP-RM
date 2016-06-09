@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +24,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
@@ -177,7 +180,7 @@ public class CoreClient {
 		String[][] tableRecipes = new String[ RecipeStorage.size() ][2];
 		int tmp = 0;
 		for( Recipe recipe : RecipeStorage.getList().values() ){
-			tableRecipes[ tmp ][ 0 ] = recipe.getName();
+			tableRecipes[ tmp ][ 0 ] = recipe.getRID() + "-" + recipe.getName();
 			tableRecipes[ tmp ][ 1 ] = recipe.getCID() + "";
 			tmp++;
 		}
@@ -210,6 +213,25 @@ public class CoreClient {
 		
 		panel1_left1.add( recipeScrollPanel );
 		
+		JButton selectRecipeButton = new JButton("Select");
+		selectRecipeButton.setVerticalAlignment(SwingConstants.BOTTOM);
+		panel1_left1.add( selectRecipeButton );
+		
+		selectRecipeButton.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			int selectedRows[] = recipeTable.getSelectedRows();
+	   			for ( int row_id : selectedRows ){
+	   				String selectedId = (String) recipeTable.getModel().getValueAt( row_id, 0 );
+	   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );;
+	   				loadPanel1Right1( panel1_right1 );
+		   			
+		   		    showThis( selectedId );
+	   			}
+	   		    
+	   		}
+	   	});
+		
 		
 		/*
 		 * 
@@ -224,42 +246,51 @@ public class CoreClient {
 		 * panel 2
 		 * 
 		 */
+		JTextField field_id;
+		JTextField field_name;
+		JTextField field_age;
 		
-		JPanel panel2_left = new JPanel();
-		panel2_left.setLayout( new BoxLayout( panel2_left, BoxLayout.PAGE_AXIS ));
+		JPanel panel2_panel = new JPanel();
+		panel2_panel.setLayout(new GridBagLayout());
+	    GridBagConstraints gbContainer = new GridBagConstraints();
+
+	    gbContainer.gridx = 0;
+	    gbContainer.gridy = GridBagConstraints.RELATIVE;
+	    gbContainer.gridwidth = 1;
+	    gbContainer.gridheight = 1;
+	    gbContainer.insets = new Insets(3, 20, 3, 20);
+	    gbContainer.anchor = GridBagConstraints.EAST;
+
+	    panel2_panel.add(label = new JLabel("Id:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('n');
+	    panel2_panel.add(label = new JLabel("Name Surname:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('h');
+	    panel2_panel.add(label = new JLabel("Age:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('c');
+
+	    gbContainer.gridx = 1;
+	    gbContainer.gridy = 0;
+	    gbContainer.weightx = 1.0;
+	    gbContainer.fill = GridBagConstraints.HORIZONTAL;
+	    gbContainer.anchor = GridBagConstraints.CENTER;
+
+	    panel2_panel.add(field_id = new JTextField(35), gbContainer);
+	    field_id.setFocusAccelerator('n');
+	    gbContainer.gridx = 1;
+	    gbContainer.gridy = GridBagConstraints.RELATIVE;
+	    panel2_panel.add(field_name = new JTextField(35), gbContainer);
+	    field_name.setText( "Value" );
+	    field_name.setFocusAccelerator('h');
+	    panel2_panel.add(field_age = new JTextField(35), gbContainer);
+	    field_age.setFocusAccelerator('c');
+	    gbContainer.weightx = 0.0;
+	    gbContainer.fill = GridBagConstraints.NONE;
+	    
+	    JButton submitButton = new JButton("Submit");
+	    submitButton.setMargin( new Insets(2,10,2,10) );
 		
 		
-		panel_2.add( panel2_left );
-		
-		//title
-		titlePanel = new JPanel();
-		titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
-						
-		label = new JLabel( "Involved Doctors:" );
-		titlePanel.add( label );
-		panel2_left.add( titlePanel );
-		//title end
-				
-		// table
-		JTable doctorTable = new JTable( dataValues, columnNames );
-		JScrollPane doctorScrollPanel = new JScrollPane();
-					
-		doctorTable.setColumnSelectionAllowed( false );
-		doctorTable.setShowHorizontalLines( true );
-		doctorTable.setShowVerticalLines( false );
-								 
-		doctorTable.setSelectionForeground( Color.white );
-		doctorTable.setSelectionBackground( Color.red );
-		doctorScrollPanel = new JScrollPane();
-		doctorScrollPanel = doctorTable.createScrollPaneForTable( doctorTable );
-												
-		tableDimension = new Dimension( 500, 150 );
-									
-		doctorTable.setPreferredScrollableViewportSize( tableDimension );
-		doctorTable.setFillsViewportHeight( true );
-		// table end
-								
-		panel2_left.add( doctorScrollPanel );
+		panel_2.add( panel2_panel );
 		
 
 		/*
@@ -349,61 +380,62 @@ public class CoreClient {
 			recepi_text.append( "Kategorija: Pankukas\n\n" );
 			recepi_text.append( "Apraksts: The code shown in bold illustrates how theselection is created. The caret is first set to the end of the complete word, then moved back to a position after the last character typed. The moveCaretPosition method not only moves the caret to a new position but also selects the text between the two positions. The completion task is implemented with the following code:" );
 			
-			//title
-			titlePanel = new JPanel();
-			titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
-			
-			label = new JLabel( "Sastavdaljas:" );
-			titlePanel.add( label );
-			panel1_right1.add( titlePanel );
-			
-			
-			/**
-			 * 
-			 * table
-			 * 
-			 */
-			
-			Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
-			
-			
-			String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
-			int tmp = 0;
-			for( Ingredient ingredient : recipe.getIngredients() ){
-				tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
-				tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
-				tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
-				tmp++;
+			if( ! recipe.getIngredients().isEmpty() ){
+				//title
+				titlePanel = new JPanel();
+				titlePanel.setLayout( new FlowLayout( FlowLayout.LEFT ) );
+				
+				label = new JLabel( "Sastavdaljas:" );
+				titlePanel.add( label );
+				panel1_right1.add( titlePanel );
+				
+				
+				/**
+				 * 
+				 * table
+				 * 
+				 */
+				
+				Object columnNames2[] = { "Sastavdalja", "Dadzums", "Mervieniba" };
+				
+				
+				String[][] tableIngredients = new String[ recipe.getIngredients().size() ][3];
+				int tmp = 0;
+				for( Ingredient ingredient : recipe.getIngredients() ){
+					tableIngredients[ tmp ][ 0 ] = ingredient.getIngredient();
+					tableIngredients[ tmp ][ 1 ] = ingredient.getValue() + "";
+					tableIngredients[ tmp ][ 2 ] = ingredient.getMeasurement();
+					tmp++;
+				}
+				
+				// table
+				JTable recipeTable2 = new JTable( tableIngredients, columnNames2 ) {
+			        private static final long serialVersionUID = 1L;
+		
+			        public boolean isCellEditable(int row, int column) {                
+			                return false;               
+			        };
+			    };
+				JScrollPane recipeScrollPanel2 = new JScrollPane();
+				
+				recipeTable2.setColumnSelectionAllowed( false );
+				recipeTable2.setShowHorizontalLines( true );
+				recipeTable2.setShowVerticalLines( false );
+		
+				
+				recipeTable2.setSelectionForeground( Color.white );
+				recipeTable2.setSelectionBackground( Color.red );
+				recipeScrollPanel2 = new JScrollPane();
+				recipeScrollPanel2 = recipeTable2.createScrollPaneForTable( recipeTable2 );
+								
+				tableDimension = new Dimension( 250, 125 );
+								
+				recipeTable2.setPreferredScrollableViewportSize( tableDimension );
+				recipeTable2.setFillsViewportHeight( true );
+				// table end
+				
+				panel1_right1.add( recipeScrollPanel2 );
 			}
-			
-			// table
-			JTable recipeTable2 = new JTable( tableIngredients, columnNames2 ) {
-		        private static final long serialVersionUID = 1L;
-	
-		        public boolean isCellEditable(int row, int column) {                
-		                return false;               
-		        };
-		    };
-			JScrollPane recipeScrollPanel2 = new JScrollPane();
-			
-			recipeTable2.setColumnSelectionAllowed( false );
-			recipeTable2.setShowHorizontalLines( true );
-			recipeTable2.setShowVerticalLines( false );
-	
-			
-			recipeTable2.setSelectionForeground( Color.white );
-			recipeTable2.setSelectionBackground( Color.red );
-			recipeScrollPanel2 = new JScrollPane();
-			recipeScrollPanel2 = recipeTable2.createScrollPaneForTable( recipeTable2 );
-							
-			tableDimension = new Dimension( 250, 125 );
-							
-			recipeTable2.setPreferredScrollableViewportSize( tableDimension );
-			recipeTable2.setFillsViewportHeight( true );
-			// table end
-			
-			panel1_right1.add( recipeScrollPanel2 );
-			
 		}//end else
 	}
 
