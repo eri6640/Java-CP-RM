@@ -2,6 +2,7 @@ package server;
 
 import server.mysql.MySQLActions;
 import both.classess.ActionData;
+import both.classess.Ingredient;
 import both.classess.Recipe;
 import both.conf.ConfActions;
 
@@ -31,6 +32,13 @@ public class ServerListener extends Listener {
         		}
         		case ConfActions.ActAddIngredientData :{
         			CoreServer.showThis( "ActAddIngredientData pieprasijums" );
+        			Ingredient ingredient = data.getIngredient();
+        			if( MySQLActions.addIngredient( ingredient ) ){
+
+            			data.setSuccess();
+            			connection.sendTCP( CoreServer.RecipeStorage );
+            			connection.sendTCP( data );
+        			}
         			break;
         		}
         		case ConfActions.ActEditRecipeData :{

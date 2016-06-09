@@ -444,6 +444,10 @@ public class CoreClient {
 		JTextField field_name;
 		JComboBox field_category;
 		JTextArea field_recipe;
+		//ingr
+		JTextField field_ing;
+		JTextField field_ing_val;
+		JTextField field_ing_mes;
 		
 		panel2_panel.removeAll();
 		panel2_panel2.removeAll();
@@ -632,9 +636,9 @@ public class CoreClient {
 	
 		    panelAddIngred.add(label = new JLabel("Nosaukums:", SwingConstants.RIGHT), gbContainer2);
 		    label.setDisplayedMnemonic('n');
-		    panelAddIngred.add(label = new JLabel("Kategorija:", SwingConstants.RIGHT), gbContainer2);
+		    panelAddIngred.add(label = new JLabel("Daudzums:", SwingConstants.RIGHT), gbContainer2);
 		    label.setDisplayedMnemonic('h');
-		    panelAddIngred.add(label = new JLabel("Recepte:", SwingConstants.RIGHT), gbContainer2);
+		    panelAddIngred.add(label = new JLabel("Mervieniba:", SwingConstants.RIGHT), gbContainer2);
 		    label.setDisplayedMnemonic('c');
 	
 		    gbContainer2.gridx = 1;
@@ -643,26 +647,15 @@ public class CoreClient {
 		    gbContainer2.fill = GridBagConstraints.HORIZONTAL;
 		    gbContainer2.anchor = GridBagConstraints.CENTER;
 	
-		    panelAddIngred.add( field_name = new JTextField(35), gbContainer2);
-		    field_name.setFocusAccelerator('n');
+		    panelAddIngred.add( field_ing = new JTextField(35), gbContainer2);
+		    field_ing.setFocusAccelerator('n');
 		    gbContainer2.gridx = 1;
 		    gbContainer2.gridy = GridBagConstraints.RELATIVE;
 		    
-		    panelAddIngred.add( field_recipe = new JTextArea( 1, 40 ), gbContainer2);
-		    field_recipe.setFocusAccelerator('c');
-		    
-		    field_recipe.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
-		    field_recipe.setLineWrap( true );
-		    field_recipe.setWrapStyleWord(true);
-		    field_recipe.setMargin(new Insets(10,10,10,10));
-			
-		    field_name.setText( recipe.getName() );
-		    //field_category.setText( recipe.getCID() );
-		    //String[] category_list = { "Bird", "Cat", "Dog", "Rabbit", "Pig" };
-
-		    //JComboBox field_category = new JComboBox( category_list );
-		    //field_category.setSelectedIndex(4);
-		    field_recipe.append( recipe.getRecipe() );
+		    panelAddIngred.add( field_ing_val = new JTextField(35), gbContainer2);
+		    field_ing_val.setFocusAccelerator('c');
+		    panelAddIngred.add( field_ing_mes = new JTextField(35), gbContainer2);
+		    field_ing_mes.setFocusAccelerator('g');
 		    
 		    gbContainer2.weightx = 0.0;
 		    gbContainer2.fill = GridBagConstraints.NONE;
@@ -718,21 +711,13 @@ public class CoreClient {
 		    submitButton0.addActionListener( new ActionListener(){
 		   		@Override
 		   		public void actionPerformed( ActionEvent event ) {
-		   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
+		   			if( field_ing.getText().isEmpty() || field_ing_val.getText().isEmpty() || field_ing_mes.getText().isEmpty() ){
 		   				showThis( "Visiem laukiem jabut aizpilditiem" );
 		   				showWarning( "Warning", "Visiem laukiem jabut aizpilditiem!" );
 		   			}
-		   			else if( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ) == 0 ){
-		   				showThis( "Problemas ar kategorijas noteikshanu!" );
-		   				showWarning( "Warning", "Problemas ar kategorijas noteikshanu!" );
-		   			}
-		   			else{
-		   				
-		   				recipe.setName( field_name.getText() );
-		   				recipe.setCategory( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ) );
-		   				recipe.setRecipe( field_recipe.getText() );
-		   				
-		   				client.sendTCP( new ActionData( getActID(), ConfActions.ActEditRecipeData, recipe ) );
+		   			else{		   				
+		   				Ingredient ingredient = new Ingredient( 0, recipe.getRID(), field_ing.getText(), field_ing_val.getText(),field_ing_mes.getText() );
+		   				client.sendTCP( new ActionData( getActID(), ConfActions.ActAddIngredientData, ingredient ) );
 		   			}
 		   		}
 		   	});

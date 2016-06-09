@@ -8,22 +8,27 @@ public class ActionData {
 	private int action;
 	private boolean success;
 	private Recipe recipe;
+	private Ingredient ingredient;
 	private ArrayList<Integer> changed_ingredients;
 	
 	public ActionData( ){
-		this( 0, 0, null, null ); // kartigi neapskatits gadijums //nepiecieshams kryo...
+		this( 0, 0, null, null, null ); // kartigi neapskatits gadijums //nepiecieshams kryo...
 	}
 	
 	public ActionData( int action_id, int action ){
-		this( action_id, action, null, null );
+		this( action_id, action, null, null, null );
 	}
 	public ActionData( int action_id, int action, Recipe recipe ){
-		this( action_id, action, recipe, null );
+		this( action_id, action, recipe, null, null );
 	}
-	public ActionData( int action_id, int action, Recipe recipe, ArrayList<Integer> changed_ingredients ){
+	public ActionData( int action_id, int action, Ingredient ingredient ){
+		this( action_id, action, null, ingredient, null );
+	}
+	public ActionData( int action_id, int action, Recipe recipe, Ingredient ingredient, ArrayList<Integer> changed_ingredients ){
 		this.action_id = action_id;
 		this.action = action;
 		this.recipe = recipe;
+		this.ingredient = ingredient;
 		this.changed_ingredients = changed_ingredients;
 	}
 	
@@ -57,6 +62,9 @@ public class ActionData {
 	
 	public Recipe getRecipe(){
 		return recipe;
+	}
+	public Ingredient getIngredient(){
+		return ingredient;
 	}
 	public ArrayList<Integer> getIngredients(){
 		return changed_ingredients;

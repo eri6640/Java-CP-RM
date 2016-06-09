@@ -5,7 +5,7 @@ public class Ingredient {
 	private int ingred_id;
 	private int recipe_id;
 	private String ingred_ingredient; // sastavdalja
-	private int ingred_value; // daudzums
+	private String ingred_value; // daudzums
 	private String ingred_measurement; // mervieniba
 	
 	public Ingredient(){ //neapskatits gadijums //kryo ...
@@ -13,13 +13,13 @@ public class Ingredient {
 		recipe_id = 0;
 	}
 	
-	public Ingredient( int ingred_id, int recipe_id, String ingred_ingredient, int ingred_value, String ingred_measurement ){
+	public Ingredient( int ingred_id, int recipe_id, String ingred_ingredient, String ingred_value, String ingred_measurement ){
 		this.ingred_id = ingred_id > 0 ? ingred_id : -1;
 		this.recipe_id = recipe_id > 0 ? recipe_id : -1;
 
 		this.ingred_ingredient = ingred_ingredient;
 		
-		this.ingred_value = ingred_value > 0 ? recipe_id : -1;
+		this.ingred_value = ingred_value;
 		
 		this.ingred_measurement = ingred_measurement;
 	}
@@ -34,8 +34,8 @@ public class Ingredient {
 		this.ingred_ingredient = ingred_ingredient;
 	}
 
-	public void setValue( int ingred_value ) {
-		this.ingred_value = ingred_value > 0 ? recipe_id : -1;
+	public void setValue( String ingred_value ) {
+		this.ingred_value = ingred_value;
 	}
 
 	public void setMeasurement( String ingred_measurement ) {
@@ -60,7 +60,7 @@ public class Ingredient {
 		return ingred_ingredient;
 	}
 
-	public int getValue() {
+	public String getValue() {
 		return ingred_value;
 	}
 

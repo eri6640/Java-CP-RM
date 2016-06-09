@@ -102,7 +102,7 @@ public class MySQLActions {
 					int ingredient_id = result.getInt( "id" );
 					int recipe_id = result.getInt( "recipe_id" );
 					String ingredient = result.getString( "ingredient" );
-					int value = result.getInt( "value" );
+					String value = result.getString( "value" );
 					String measurement = result.getString( "measurement" );
 					
 					CoreServer.RecipeStorage.addRecipeIngredient( new Ingredient( ingredient_id, recipe_id, ingredient, value, measurement ) );
@@ -156,11 +156,10 @@ public class MySQLActions {
 
 	public static boolean updateRecipe( Recipe recipe ) {
 		
-		Statement ps;
 		Connection Connection = createConnection( "updateRecipe()" );
 		
 		try {			
-			String query = "UPDATE `<table>` SET `category_id` = ?, `name` = ?, `recipe` = ? WHERE `id` = ?;".replaceAll( "<table>", table_recipe );;
+			String query = "UPDATE `<table>` SET `category_id` = ?, `name` = ?, `recipe` = ? WHERE `id` = ?;".replaceAll( "<table>", table_recipe );
 	    	
 	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
 	    	
@@ -168,6 +167,44 @@ public class MySQLActions {
 	    	preparedStatement.setString( 2, recipe.getName() );
 	    	preparedStatement.setString( 3, recipe.getRecipe() );
 	    	preparedStatement.setInt( 4, recipe.getRID() );
+	    	
+	    	preparedStatement.executeUpdate();
+	    	preparedStatement.close();
+			
+			Connection.close();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		CoreServer.showThis( "bljup" );
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		
+		return true;
+
+	}
+	public static boolean addIngredient( Ingredient ingredient ) {
+		
+		Statement ps;
+		Connection Connection = createConnection( "updateRecipe()" );
+		
+		try {		
+	    	String query = "INSERT INTO `<table>` (`id`, `recipe_id`, `ingredient`, `value`, `measurement`) VALUES (NULL, ?, ?, ?, ?);".replaceAll( "<table>", table_ingredient );
+			
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+	    	
+	    	preparedStatement.setInt( 1, ingredient.getRID() );
+	    	preparedStatement.setString( 2, ingredient.getIngredient() );
+	    	preparedStatement.setString( 3, ingredient.getValue() );
+	    	preparedStatement.setString( 4, ingredient.getMeasurement() );
 	    	
 	    	preparedStatement.executeUpdate();
 	    	preparedStatement.close();
