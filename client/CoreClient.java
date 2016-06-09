@@ -196,7 +196,10 @@ public class CoreClient {
 		 * 
 		 */
 		
+		JPanel panel3_panel = new JPanel();
+		panel_3.add( panel3_panel );
 		
+		loadPanel3( panel3_panel );
 		
 		
 		
@@ -534,11 +537,6 @@ public class CoreClient {
 		    field_recipe.setMargin(new Insets(10,10,10,10));
 			
 		    field_name.setText( recipe.getName() );
-		    //field_category.setText( recipe.getCID() );
-		    //String[] category_list = { "Bird", "Cat", "Dog", "Rabbit", "Pig" };
-
-		    //JComboBox field_category = new JComboBox( category_list );
-		    //field_category.setSelectedIndex(4);
 		    field_recipe.append( recipe.getRecipe() );
 		    
 		    gbContainer.weightx = 0.0;
@@ -758,6 +756,7 @@ public class CoreClient {
 		    submitButton4.addActionListener( new ActionListener(){
 		   		@Override
 		   		public void actionPerformed( ActionEvent event ) {
+		   			client.sendTCP( new ActionData( getActID(), ConfActions.ActDelRecipeData, recipe ) );
 		   			loadPanel2( panel2_panel, panel2_panel2 );
 		   		}
 		   	});
@@ -799,5 +798,98 @@ public class CoreClient {
 		    
 		    
 		}
+	}
+	public void loadPanel3( JPanel panel3_panel){
+		JTextField field_name;
+		JComboBox field_category;
+		JTextArea field_recipe;
+		
+		panel3_panel.removeAll();
+		
+		panel3_panel.setLayout(new GridBagLayout());
+	    GridBagConstraints gbContainer = new GridBagConstraints();
+
+	    gbContainer.gridx = 0;
+	    gbContainer.gridy = GridBagConstraints.RELATIVE;
+	    gbContainer.gridwidth = 1;
+	    gbContainer.gridheight = 1;
+	    gbContainer.insets = new Insets(3, 20, 3, 20);
+	    gbContainer.anchor = GridBagConstraints.EAST;
+
+	    panel3_panel.add(label = new JLabel("Nosaukums:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('n');
+	    panel3_panel.add(label = new JLabel("Kategorija:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('h');
+	    panel3_panel.add(label = new JLabel("Recepte:", SwingConstants.RIGHT), gbContainer);
+	    label.setDisplayedMnemonic('c');
+
+	    gbContainer.gridx = 1;
+	    gbContainer.gridy = 0;
+	    gbContainer.weightx = 1.0;
+	    gbContainer.fill = GridBagConstraints.HORIZONTAL;
+	    gbContainer.anchor = GridBagConstraints.CENTER;
+
+	    panel3_panel.add( field_name = new JTextField(35), gbContainer);
+	    field_name.setFocusAccelerator('n');
+	    gbContainer.gridx = 1;
+	    gbContainer.gridy = GridBagConstraints.RELATIVE;
+	    
+	    String[] category_list = CategoryStorage.getList().values().toArray(new String[0]);
+	    
+	    panel3_panel.add( field_category = new JComboBox<String>( category_list ), gbContainer);
+	   
+	    field_category.setSelectedIndex( 0 );
+	    
+	    panel3_panel.add( field_recipe = new JTextArea( 1, 40 ), gbContainer);
+	    field_recipe.setFocusAccelerator('c');
+	    
+	    field_recipe.setFont( new Font( "Verdana", Font.LAYOUT_LEFT_TO_RIGHT, 12 ) );
+	    field_recipe.setLineWrap( true );
+	    field_recipe.setWrapStyleWord(true);
+	    field_recipe.setMargin(new Insets(10,10,10,10));
+	    
+	    gbContainer.weightx = 0.0;
+	    gbContainer.fill = GridBagConstraints.NONE;
+
+	    
+	    
+	    
+	    
+	    /*
+	     * 
+	     * pogas
+	     * 
+	     */
+	    
+	    JPanel buttonPanel = new JPanel();
+	    panel3_panel.add( buttonPanel );
+	    /*
+	     * SAVE SAVE SAVE
+	     */
+	    JButton submitButton = new JButton("Add Recipe");
+	    submitButton.setMargin( new Insets(2,10,2,10) );
+
+	    buttonPanel.add( submitButton );
+	    
+	    submitButton.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
+	   				showThis( "Visiem laukiem jabut aizpilditiem" );
+	   				showWarning( "Warning", "Visiem laukiem jabut aizpilditiem!" );
+	   			}
+	   			else if( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ) == 0 ){
+	   				showThis( "Problemas ar kategorijas noteikshanu!" );
+	   				showWarning( "Warning", "Problemas ar kategorijas noteikshanu!" );
+	   			}
+	   			else{
+	   				
+	   				Recipe recipe = new Recipe( CategoryStorage.getCategory( category_list[ field_category.getSelectedIndex() ] ), field_name.getText(), field_recipe.getText() );
+	   				client.sendTCP( new ActionData( getActID(), ConfActions.ActAddRecipeData, recipe ) );
+	   				loadPanel3( panel3_panel );
+	   				
+	   			}
+	   		}
+	   	});
 	}
 }

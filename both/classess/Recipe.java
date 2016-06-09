@@ -16,6 +16,9 @@ public class Recipe {
 	public Recipe(){
 		active = false;
 	}
+	public Recipe( int category_id, String recipe_name, String recipe_recipe ){
+		this( 0, category_id, recipe_name, recipe_recipe, 0, new ArrayList<Ingredient>() );
+	}
 	
 	public Recipe( int recipe_id, int category_id, String recipe_name, String recipe_recipe, int recipe_created ){
 		this( recipe_id, category_id, recipe_name, recipe_recipe, recipe_created, new ArrayList<Ingredient>() );
@@ -28,24 +31,15 @@ public class Recipe {
 		active = true;
 		
 		if( recipe_id > 0 ) this.recipe_id = recipe_id;
-		else{
-			active = false;
-			return;
-		}
+		else active = false;
 		if( category_id > 0 ) this.category_id = category_id;
-		else{
-			active = false;
-			return;
-		}
+		else active = false;
 		
 		this.recipe_name = recipe_name;
 		this.recipe_recipe = recipe_recipe;
 		//this.recipe_created = recipe_created > 0 ? recipe_created : -1;
 		if( recipe_created > 0 ) this.recipe_created = recipe_created;
-		else{
-			active = false;
-			return;
-		}
+		else active = false;
 		
 		if( ingredient_list.isEmpty() ) this.ingredient_list = new ArrayList<Ingredient>();
 		else setIngredients( ingredient_list );

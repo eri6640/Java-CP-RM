@@ -30,6 +30,8 @@ public class ServerListener extends Listener {
         		}
         		case ConfActions.ActAddRecipeData :{
         			CoreServer.showThis( "ActAddRecipeData pieprasijums" );
+        			Recipe recipe = data.getRecipe();
+        			
         			break;
         		}
         		case ConfActions.ActAddIngredientData :{
@@ -59,6 +61,14 @@ public class ServerListener extends Listener {
         		}
         		case ConfActions.ActDelRecipeData :{
         			CoreServer.showThis( "ActDelRecipeData pieprasijums" );
+        			MySQLActions.deleteRecipe( data.getRecipe().getRID() );
+        			CoreServer.RecipeStorage.delRecipe( data.getRecipe() );
+
+        			MySQLActions.loadAll();
+        			
+        			data.setSuccess();
+        			connection.sendTCP( CoreServer.RecipeStorage );
+        			connection.sendTCP( data );
         			break;
         		}
         		case ConfActions.ActDelIngredientData :{

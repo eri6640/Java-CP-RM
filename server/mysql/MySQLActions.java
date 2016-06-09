@@ -194,6 +194,8 @@ public class MySQLActions {
 		return true;
 
 	}
+	
+	
 	public static int addIngredient( Ingredient ingredient ) {
 		
 		int index = -1;
@@ -269,6 +271,79 @@ public class MySQLActions {
 		} catch (SQLException e2) {
 			e2.printStackTrace();
 		}
+
+	}
+	public static void deleteRecipe( int index ) {
+		
+		Connection Connection = createConnection( "deleteIngredients()" );
+
+		/*
+		 * Ingredients
+		 */
+		
+		try {
+			String query = "DELETE FROM `<table>` WHERE `id` = ?;".replaceAll( "<table>", table_recipe );
+	    	
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+	    	
+	    	preparedStatement.setInt( 1, index );
+	    	
+	    	preparedStatement.executeUpdate();
+	    	preparedStatement.close();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+
+	}
+	
+	
+	public static int addRecipe( Recipe recipe ) {
+		
+		int index = -1;
+		Connection Connection = createConnection( "updateRecipe()" );
+		
+		try {	
+	    	String query = "INSERT INTO `<table>` (`id`, `category_id`, `name`, `recipe`, `created`) VALUES (NULL, ?, ?, ?, 0);".replaceAll( "<table>", table_recipe );
+			
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query, Statement.RETURN_GENERATED_KEYS );
+	    	
+	    	preparedStatement.setInt( 1, recipe.getCID() );
+	    	preparedStatement.setString( 2, recipe.getName() );
+	    	preparedStatement.setString( 3, recipe.getRecipe() );
+	    	
+	    	preparedStatement.executeUpdate();
+	    	ResultSet rs = preparedStatement.getGeneratedKeys();
+            if( rs.next() ) index = rs.getInt(1);
+	    	
+	    	preparedStatement.close();
+			
+			Connection.close();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+		CoreServer.showThis( "bljup " + index );
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		
+		return index;
 
 	}
 	

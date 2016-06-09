@@ -32,6 +32,15 @@ public class RecipesArray {
 		return true;
 	}
 	
+	public boolean delRecipe( Recipe recipe ){
+		int recipe_id = recipe.getRID();
+		
+		if( list.containsKey( recipe_id ) ) return false;
+		
+		list.remove( recipe_id, recipe );// nestrada...
+		return true;
+	}
+	
 	public boolean addRecipeList( HashMap<Integer, Recipe> list ){
 		if( list.isEmpty() ) return false;
 		
