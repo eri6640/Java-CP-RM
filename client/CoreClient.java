@@ -562,7 +562,13 @@ public class CoreClient {
 				}
 				
 				// table
-				JTable recipeTable3 = new JTable( tableIngredients, columnNames2 );
+				JTable recipeTable3 = new JTable( tableIngredients, columnNames2 ) {
+			        private static final long serialVersionUID = 1L;
+		
+			        public boolean isCellEditable(int row, int column) {                
+			                return false;               
+			        };
+			    };
 				JScrollPane recipeScrollPanel3 = new JScrollPane();
 				
 				recipeTable3.setColumnSelectionAllowed( false );
@@ -624,41 +630,40 @@ public class CoreClient {
 		    
 		    //
 		    
-		    JButton submitButton2 = new JButton("Save Ingredients");
-		    submitButton.setMargin( new Insets(2,10,2,10) );
-
-		    buttonPanel.add( submitButton2 );
-		    
-		    submitButton2.addActionListener( new ActionListener(){
-		   		@Override
-		   		public void actionPerformed( ActionEvent event ) {
-		   			if( field_name.getText().isEmpty() || field_recipe.getText().isEmpty() ){
-		   				showThis( "Visiem laukiem jabut aizpilditiem" );
-		   			}
-		   			else if( ! isValidName( field_name.getText() ) ){
-		   				showThis( "Problemas ar kategorijas notiekshanu!" );
-		   			}
-		   			else if( isNumber( field_id.getText() ) && isNumber( field_age.getText() ) ){
-		   				String[] name = field_name.getText().split( " " );
-		   				int id = Integer.parseInt(field_id.getText());
-		   				short age = (short) Integer.parseInt(field_id.getText());
-		   				//Main.addNewPatient( new Patient( id, name[0], name[1], age, new ArrayList<Appointment>() ) );
-		   				//frameHospitalMenu();
-		   			}
-		   			else{
-			   			System.out.println( "Nav norâdîts parezs id un/vai age" );
-		   			}
-		   		}
-		   	});
-		    
-		    //
-		    
 		    JButton submitButton3 = new JButton("Reset");
 		    submitButton.setMargin( new Insets(2,10,2,10) );
 
 		    buttonPanel.add( submitButton3 );
 		    
 		    submitButton3.addActionListener( new ActionListener(){
+		   		@Override
+		   		public void actionPerformed( ActionEvent event ) {
+		   			loadPanel2( panel2_panel, panel2_panel2 );
+		   		}
+		   	});
+		    
+		    //
+		    
+		    JButton submitButton4 = new JButton("Del Recipe");
+		    submitButton.setMargin( new Insets(2,10,2,10) );
+
+		    buttonPanel.add( submitButton4 );
+		    
+		    submitButton4.addActionListener( new ActionListener(){
+		   		@Override
+		   		public void actionPerformed( ActionEvent event ) {
+		   			loadPanel2( panel2_panel, panel2_panel2 );
+		   		}
+		   	});
+		    
+		    //
+		    
+		    JButton submitButton5 = new JButton("Del Selected Ingredients");
+		    submitButton.setMargin( new Insets(2,10,2,10) );
+
+		    buttonPanel.add( submitButton5 );
+		    
+		    submitButton5.addActionListener( new ActionListener(){
 		   		@Override
 		   		public void actionPerformed( ActionEvent event ) {
 		   			loadPanel2( panel2_panel, panel2_panel2 );
