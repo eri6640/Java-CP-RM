@@ -191,15 +191,15 @@ public class MySQLActions {
 		return true;
 
 	}
-	public static boolean addIngredient( Ingredient ingredient ) {
+	public static int addIngredient( Ingredient ingredient ) {
 		
-		Statement ps;
+		int index = -1;
 		Connection Connection = createConnection( "updateRecipe()" );
 		
 		try {		
 	    	String query = "INSERT INTO `<table>` (`id`, `recipe_id`, `ingredient`, `value`, `measurement`) VALUES (NULL, ?, ?, ?, ?);".replaceAll( "<table>", table_ingredient );
 			
-	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query, Statement.RETURN_GENERATED_KEYS );
 	    	
 	    	preparedStatement.setInt( 1, ingredient.getRID() );
 	    	preparedStatement.setString( 2, ingredient.getIngredient() );
@@ -207,16 +207,19 @@ public class MySQLActions {
 	    	preparedStatement.setString( 4, ingredient.getMeasurement() );
 	    	
 	    	preparedStatement.executeUpdate();
+	    	ResultSet rs = preparedStatement.getGeneratedKeys();
+            if( rs.next() ) index = rs.getInt(1);
+	    	
 	    	preparedStatement.close();
 			
 			Connection.close();
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 		
-		CoreServer.showThis( "bljup" );
+		CoreServer.showThis( "bljup " + index );
 		
 		
 		//
@@ -226,7 +229,7 @@ public class MySQLActions {
 			e2.printStackTrace();
 		}
 		
-		return true;
+		return index;
 
 	}
 	

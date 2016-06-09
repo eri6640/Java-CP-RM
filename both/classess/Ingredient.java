@@ -30,6 +30,9 @@ public class Ingredient {
 	 * 
 	 * 
 	 */
+	public void setId( int ingred_id ) {
+		this.ingred_id = ingred_id;
+	}
 	public void setIngredient( String ingred_ingredient ) {
 		this.ingred_ingredient = ingred_ingredient;
 	}

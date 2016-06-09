@@ -426,14 +426,19 @@ public class CoreClient {
 				selectRecipeButton.addActionListener( new ActionListener(){
 			   		@Override
 			   		public void actionPerformed( ActionEvent event ) {
-			   			int selectedRows[] = recipeTable.getSelectedRows();
-			   			for ( int row_id : selectedRows ){
-			   				String selectedId = (String) recipeTable.getModel().getValueAt( row_id, 0 );
-			   				SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );
-			   				
-			   				loadPanel1Right1( panel1_right1 );
-			   				
-				   		    showThis( selectedId );
+			   			if( recipeTable.getSelectedRows().length != 0 ){
+				   			int selectedRows[] = recipeTable.getSelectedRows();
+				   			//for ( int row_id : selectedRows ){
+				   			String selectedId = (String) recipeTable.getModel().getValueAt( selectedRows[0], 0 );
+				   			SelectedRecipeID = Integer.parseInt( selectedId.split( "-" )[0] );
+				   				
+				   			loadPanel1Right1( panel1_right1 );
+				   				
+					   		showThis( selectedId );
+				   			//}			   				
+			   			}
+			   			else{
+			   				showWarning( "Warning", "Atlasishana bija neveiksmiga" );
 			   			}
 			   		    
 			   		}
@@ -697,6 +702,7 @@ public class CoreClient {
 		   				recipe.setRecipe( field_recipe.getText() );
 		   				
 		   				client.sendTCP( new ActionData( getActID(), ConfActions.ActEditRecipeData, recipe ) );
+		   				loadPanel2( panel2_panel, panel2_panel2 );
 		   			}
 		   		}
 		   	});
@@ -718,6 +724,7 @@ public class CoreClient {
 		   			else{		   				
 		   				Ingredient ingredient = new Ingredient( 0, recipe.getRID(), field_ing.getText(), field_ing_val.getText(),field_ing_mes.getText() );
 		   				client.sendTCP( new ActionData( getActID(), ConfActions.ActAddIngredientData, ingredient ) );
+		   				loadPanel2( panel2_panel, panel2_panel2 );
 		   			}
 		   		}
 		   	});
