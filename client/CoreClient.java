@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -360,9 +361,9 @@ public class CoreClient {
 			recepi_text.setEditable( false );
 			recepi_text.setMargin(new Insets(10,10,10,10));
 			
-			recepi_text.append( "Recepte: Pankukas\n\n" );
-			recepi_text.append( "Kategorija: Pankukas\n\n" );
-			recepi_text.append( "Apraksts: The code shown in bold illustrates how theselection is created. The caret is first set to the end of the complete word, then moved back to a position after the last character typed. The moveCaretPosition method not only moves the caret to a new position but also selects the text between the two positions. The completion task is implemented with the following code:" );
+			recepi_text.append( "Recepte: " + recipe.getName() + "\n\n" );
+			recepi_text.append( "Kategorija: " + CategoryStorage.getCategory( recipe.getCID() ) + "\n\n" );
+			recepi_text.append( "Apraksts: " + recipe.getRecipe() );
 			
 			if( ! recipe.getIngredients().isEmpty() ){
 				//title
@@ -425,7 +426,7 @@ public class CoreClient {
 
 	public void loadPanel2( JPanel panel2_panel ){
 		JTextField field_name;
-		JTextField field_category;
+		JComboBox field_category;
 		JTextArea field_recipe;
 		
 		panel2_panel.removeAll();
@@ -483,8 +484,21 @@ public class CoreClient {
 		    field_name.setFocusAccelerator('n');
 		    gbContainer.gridx = 1;
 		    gbContainer.gridy = GridBagConstraints.RELATIVE;
-		    panel2_panel.add( field_category = new JTextField(35), gbContainer);
-		    field_category.setFocusAccelerator('h');
+		    
+		    String[] category_list = CategoryStorage.getList().values().toArray(new String[0]);
+		    
+		    panel2_panel.add( field_category = new JComboBox<String>( category_list ), gbContainer);
+		    
+		    int tmp_selected = 0;
+		    for( String string : category_list ){
+		    	if( string.equalsIgnoreCase( CategoryStorage.getCategory( recipe.getCID() ) ) ){
+		    		break;
+		    	}
+		    	else tmp_selected++;
+		    }
+		    
+		    field_category.setSelectedIndex( tmp_selected );
+		    
 		    panel2_panel.add( field_recipe = new JTextArea( 1, 40 ), gbContainer);
 		    field_recipe.setFocusAccelerator('c');
 		    
@@ -493,8 +507,12 @@ public class CoreClient {
 		    field_recipe.setWrapStyleWord(true);
 		    field_recipe.setMargin(new Insets(10,10,10,10));
 			
-		    field_name.setText( recipe.getRecipe() );
-		    field_category.setText( recipe.getRecipe() );
+		    field_name.setText( recipe.getName() );
+		    //field_category.setText( recipe.getCID() );
+		    //String[] category_list = { "Bird", "Cat", "Dog", "Rabbit", "Pig" };
+
+		    //JComboBox field_category = new JComboBox( category_list );
+		    //field_category.setSelectedIndex(4);
 		    field_recipe.append( recipe.getRecipe() );
 		    
 		    gbContainer.weightx = 0.0;
