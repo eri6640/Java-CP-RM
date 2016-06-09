@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import server.mysql.MySQL;
 import server.mysql.MySQLActions;
+import both.classess.CategoryArray;
 import both.classess.RecipesArray;
 import client.CoreClient;
 
@@ -18,6 +19,7 @@ public class CoreServer{
 	public static MySQL MySQL;
 	
 	public static RecipesArray RecipeStorage = new RecipesArray();
+	public static CategoryArray CategoryStorage = new CategoryArray();
 	
 	
 	public static void main( String[] args ){
@@ -52,6 +54,7 @@ public class CoreServer{
 		server.getKryo().register( both.classess.RecipesArray.class );
 		server.getKryo().register( both.classess.Recipe.class );
 		server.getKryo().register( both.classess.Ingredient.class );
+		server.getKryo().register( both.classess.CategoryArray.class );
 		server.getKryo().register(java.util.HashMap.class);
 		server.getKryo().register(java.util.ArrayList.class);
 	    

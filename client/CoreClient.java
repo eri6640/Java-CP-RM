@@ -1,8 +1,5 @@
 package client;
 
-import hospital.Appointment;
-import hospital.Patient;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,6 +33,7 @@ import javax.swing.event.ChangeListener;
 
 import server.ServerListener;
 import both.classess.ActionData;
+import both.classess.CategoryArray;
 import both.classess.Ingredient;
 import both.classess.Recipe;
 import both.classess.RecipesArray;
@@ -50,7 +48,10 @@ public class CoreClient {
 	
 	public static int ActionID = 0;
 	private static JFrame frame;
+	
 	public static RecipesArray RecipeStorage = new RecipesArray();
+	public static CategoryArray CategoryStorage = new CategoryArray();
+	
 	public static int SelectedRecipeID = 0;
 
 	public static void main( String[] args ){
@@ -69,6 +70,7 @@ public class CoreClient {
 	    client.getKryo().register( both.classess.RecipesArray.class );
 	    client.getKryo().register( both.classess.Recipe.class );
 	    client.getKryo().register( both.classess.Ingredient.class );
+	    client.getKryo().register( both.classess.CategoryArray.class );
 	    client.getKryo().register(java.util.HashMap.class);
 	    client.getKryo().register(java.util.ArrayList.class);
 
@@ -188,7 +190,7 @@ public class CoreClient {
 		int tmp = 0;
 		for( Recipe recipe : RecipeStorage.getList().values() ){
 			tableRecipes[ tmp ][ 0 ] = recipe.getRID() + "-" + recipe.getName();
-			tableRecipes[ tmp ][ 1 ] = recipe.getCID() + "";
+			tableRecipes[ tmp ][ 1 ] = CategoryStorage.getCategory( recipe.getCID() ) + "";
 			tmp++;
 		}
 		

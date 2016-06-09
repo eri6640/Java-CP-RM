@@ -19,6 +19,7 @@ public class ServerListener extends Listener {
         			CoreServer.showThis( "ActGetData pieprasijums" );
         			data.setSuccess();
         			connection.sendTCP( CoreServer.RecipeStorage );
+        			connection.sendTCP( CoreServer.CategoryStorage );
         			connection.sendTCP( data );
         			break;
         		}

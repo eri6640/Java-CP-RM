@@ -2,6 +2,7 @@ package client;
 
 import server.CoreServer;
 import both.classess.ActionData;
+import both.classess.CategoryArray;
 import both.classess.RecipesArray;
 import both.conf.ConfActions;
 
@@ -15,6 +16,10 @@ public class ClientListener extends Listener {
 		if( object instanceof RecipesArray ){
 			CoreClient.RecipeStorage = (RecipesArray)object;
 			CoreClient.showThis( "Received RecipeStorage" );
+		}
+		else if( object instanceof CategoryArray ){
+			CoreClient.CategoryStorage = (CategoryArray)object;
+			CoreClient.showThis( "Received CategoryStorage" );
 		}
 		else if( object instanceof ActionData ){
         	ActionData data = (ActionData)object;

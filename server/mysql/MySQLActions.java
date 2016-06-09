@@ -10,7 +10,8 @@ import both.classess.Recipe;
 import server.CoreServer;
 
 public class MySQLActions {
-	
+
+	private static String table_category = "cp_categories";
 	private static String table_recipe = "cp_recipes";
 	private static String table_ingredient = "cp_recipes_ingredients";
 	
@@ -113,14 +114,33 @@ public class MySQLActions {
 			}
 		}
 
-		try {
-			Connection.close();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
 		CoreServer.showThis( "Loaded " + ingredients + " ingredients!" );
 		//CoreServer.showThis( "1 " + CoreServer.RecipeStorage.getRecipe( 1 ).ingredientSize() );
+		
+		try {
+			ps = (Statement) Connection.createStatement();
+		
+			String query = "SELECT * FROM `<table>`".replaceAll( "<table>", table_category );
+			
+			ResultSet result = ps.executeQuery( query );
+			
+			while( result.next() ) {
+				
+				int id = result.getInt( "id" );
+				String category = result.getString( "category" );
+				
+				CoreServer.CategoryStorage.addCategory( id, category );
+				
+            }
+			
+
+			ps.close();	
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		CoreServer.showThis( "Loaded " + CoreServer.CategoryStorage.size() + " categories!" );
 		
 		
 		//
