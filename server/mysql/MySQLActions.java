@@ -173,8 +173,6 @@ public class MySQLActions {
 	    	
 	    	preparedStatement.executeUpdate();
 	    	preparedStatement.close();
-			
-			Connection.close();
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -216,8 +214,6 @@ public class MySQLActions {
             if( rs.next() ) index = rs.getInt(1);
 	    	
 	    	preparedStatement.close();
-			
-			Connection.close();
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -294,6 +290,19 @@ public class MySQLActions {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		try {
+			String query = "DELETE FROM `<table>` WHERE `recipe_id` = ?;".replaceAll( "<table>", table_ingredient );
+	    	
+	    	PreparedStatement preparedStatement = Connection.prepareStatement( query );
+	    	
+	    	preparedStatement.setInt( 1, index );
+	    	
+	    	preparedStatement.executeUpdate();
+	    	preparedStatement.close();
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		
 		//
@@ -325,8 +334,6 @@ public class MySQLActions {
             if( rs.next() ) index = rs.getInt(1);
 	    	
 	    	preparedStatement.close();
-			
-			Connection.close();
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -344,6 +351,46 @@ public class MySQLActions {
 		}
 		
 		return index;
+
+	}
+	
+
+	public static void addCategories( ArrayList<String> categ ) {
+		
+		int index = -1;
+		Connection Connection = createConnection( "addCategories()" );
+		
+		for( String string : categ ){
+			if( CoreServer.CategoryStorage.getCategory(string) == 0 && string != null ){
+				try {	
+			    	String query = "INSERT INTO `<table>` (`id`, `category`) VALUES (NULL, ?);".replaceAll( "<table>", table_category );
+					
+			    	PreparedStatement preparedStatement = Connection.prepareStatement( query, Statement.RETURN_GENERATED_KEYS );
+
+			    	preparedStatement.setString( 1, string );
+			    	
+			    	preparedStatement.executeUpdate();
+			    	ResultSet rs = preparedStatement.getGeneratedKeys();
+		            if( rs.next() ) index = rs.getInt(1);
+			    	
+			    	preparedStatement.close();
+				
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				CoreServer.CategoryStorage.addCategory(index, string);
+			}
+		}
+		
+		CoreServer.showThis( "bljup " + index );
+		
+		
+		//
+		try {
+			Connection.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
 
 	}
 	

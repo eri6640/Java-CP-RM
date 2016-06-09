@@ -11,12 +11,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,12 +31,11 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import server.ServerListener;
+import both.ReadWrite.ReadWriteActions;
 import both.classess.ActionData;
 import both.classess.CategoryArray;
 import both.classess.Ingredient;
@@ -42,14 +45,14 @@ import both.conf.ConfActions;
 import both.conf.ConfLang;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 
 public class CoreClient {
 	
 	public static int ActionID = 0;
 	private static JFrame frame;
 	private static Client client;
+	private static JFileChooser chooser;
+	private static File selectedFile;
 	
 	public static RecipesArray RecipeStorage = new RecipesArray();
 	public static CategoryArray CategoryStorage = new CategoryArray();
@@ -200,6 +203,98 @@ public class CoreClient {
 		panel_3.add( panel3_panel );
 		
 		loadPanel3( panel3_panel );
+		/*
+		 * 
+		 * panel 4
+		 * 
+		 */
+		
+		JPanel panel4_panel = new JPanel();
+		panel_4.add( panel4_panel );
+		
+		JButton chooserB = new JButton("Export directory");
+		chooser = new JFileChooser(); 
+		chooserB.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			JFileChooser chooser = new JFileChooser();
+	   			chooser.setCurrentDirectory(new java.io.File("."));
+	   			String choosertitle = "Chooser";
+	   		    chooser.setDialogTitle(choosertitle);
+	   		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	   		    
+	   		    chooser.setAcceptAllFileFilterUsed(false);
+	   		    int returnValue = chooser.showOpenDialog(null);
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		        	selectedFile = chooser.getSelectedFile();
+		        }
+	   		}
+		});
+		panel4_panel.add(chooserB);
+		
+		JButton chooserBB = new JButton("Export");
+		chooserBB.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			if( selectedFile != null ){
+	   				showThis( selectedFile.getPath() );
+		   			try {
+		   				ReadWriteActions.create( CategoryStorage, selectedFile.getPath() + "/saved_data.txt" );
+		   			} catch (FileNotFoundException e) {
+		   				e.printStackTrace();
+		   			} catch (UnsupportedEncodingException e) {
+		   				e.printStackTrace();
+		   			}
+	   			}
+	   			else showWarning( "Warning", "Nav izveleta dir" );
+	   		}
+		});
+		panel4_panel.add(chooserBB);
+		
+		
+		///
+		JPanel panel4_panel2 = new JPanel();
+		panel_4.add( panel4_panel2 );
+		
+		JButton chooserBA = new JButton("Import file");
+		chooser = new JFileChooser(); 
+		chooserBA.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			JFileChooser chooser = new JFileChooser();
+	   			chooser.setCurrentDirectory(new java.io.File("."));
+	   			String choosertitle = "Chooser";
+	   		    chooser.setDialogTitle(choosertitle);
+	   		    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+	   		    
+	   		    chooser.setAcceptAllFileFilterUsed(false);
+	   		    int returnValue = chooser.showOpenDialog(null);
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		        	selectedFile = chooser.getSelectedFile();
+		        }
+	   		}
+		});
+		panel4_panel2.add(chooserBA);
+		
+		JButton chooserBBA = new JButton("Import");
+		chooserBBA.addActionListener( new ActionListener(){
+	   		@Override
+	   		public void actionPerformed( ActionEvent event ) {
+	   			if( selectedFile != null ){
+	   				showThis( selectedFile.getPath() );
+	   				try {
+						client.sendTCP( ReadWriteActions.read( selectedFile ) );
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	   			}
+	   			else showWarning( "Warning", "Nav izvelets fails" );
+	   		}
+		});
+		panel4_panel2.add(chooserBBA);
+	
+	
 		
 		
 		

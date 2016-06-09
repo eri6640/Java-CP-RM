@@ -1,15 +1,10 @@
 package server;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import server.mysql.MySQL;
 import server.mysql.MySQLActions;
 import both.classess.CategoryArray;
 import both.classess.RecipesArray;
-import client.CoreClient;
 
 import com.esotericsoftware.kryonet.Server;
 

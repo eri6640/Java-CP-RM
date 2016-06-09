@@ -1,6 +1,5 @@
 package client;
 
-import server.CoreServer;
 import both.classess.ActionData;
 import both.classess.CategoryArray;
 import both.classess.RecipesArray;

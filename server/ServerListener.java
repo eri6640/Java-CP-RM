@@ -16,7 +16,12 @@ public class ServerListener extends Listener {
 	@Override
 	public void received (Connection connection, Object object) {
 
-        if( object instanceof ActionData ) {
+		if( object instanceof ArrayList){
+			ArrayList<String> categ = (ArrayList<String>)object;
+			MySQLActions.addCategories(categ);
+			connection.sendTCP( CoreServer.CategoryStorage );
+		}
+		else if( object instanceof ActionData ) {
         	ActionData data = (ActionData)object;
 
         	switch( data.getAction() ){

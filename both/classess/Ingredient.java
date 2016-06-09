@@ -1,5 +1,6 @@
 package both.classess;
 
+
 public class Ingredient {
 	
 	private int ingred_id;
